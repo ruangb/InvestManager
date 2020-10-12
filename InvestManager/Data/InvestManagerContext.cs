@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace InvestManager.Models
 {
@@ -13,6 +9,7 @@ namespace InvestManager.Models
         {
         }
 
-        public DbSet<InvestManager.Models.Operation> Operation { get; set; }
+        public DbSet<Operation> Operation { get; set; }
+        public DbSet<Share> Share { get; set; }
     }
 }

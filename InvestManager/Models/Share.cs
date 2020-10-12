@@ -1,9 +1,8 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace InvestManager.Models
 {
-    public class Operation
+    public class Share
     {
         public int Id { get; set; }
 
@@ -15,23 +14,16 @@ namespace InvestManager.Models
 
         public int Quantity { get; set; }
 
-        public DateTime Date { get; set; }
-
-        [Column(TypeName = "varchar(6)")]
-        public string Type { get; set; }
-
-        public Operation()
+        public Share()
         {
         }
 
-        public Operation(int id, string asset, decimal value, int quantity, DateTime date, string type)
+        public Share(int id, string asset, decimal value, int quantity)
         {
             Id = id;
             Asset = asset;
             Value = value;
             Quantity = quantity;
-            Date = date;
-            Type = type;
         }
     }
 }
