@@ -23,17 +23,21 @@ namespace InvestManager.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Asset")
+                        .IsRequired()
                         .HasColumnType("varchar(20)");
 
                     b.Property<DateTime>("Date");
 
+                    b.Property<double>("Price");
+
                     b.Property<int>("Quantity");
 
-                    b.Property<string>("Type")
-                        .HasColumnType("varchar(6)");
+                    b.Property<decimal>("Status")
+                        .HasColumnType("decimal(1)");
 
-                    b.Property<decimal>("Value")
-                        .HasColumnType("decimal(12,2)");
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("varchar(6)");
 
                     b.HasKey("Id");
 
@@ -46,12 +50,12 @@ namespace InvestManager.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Asset")
+                        .IsRequired()
                         .HasColumnType("varchar(20)");
 
-                    b.Property<int>("Quantity");
+                    b.Property<double>("Price");
 
-                    b.Property<decimal>("Value")
-                        .HasColumnType("decimal(12,2)");
+                    b.Property<int>("Quantity");
 
                     b.HasKey("Id");
 

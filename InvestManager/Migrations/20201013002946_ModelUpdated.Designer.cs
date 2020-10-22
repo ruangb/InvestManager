@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InvestManager.Migrations
 {
     [DbContext(typeof(InvestManagerContext))]
-    [Migration("20201012190058_NewEntities")]
-    partial class NewEntities
+    [Migration("20201013002946_ModelUpdated")]
+    partial class ModelUpdated
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -25,17 +25,21 @@ namespace InvestManager.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Asset")
+                        .IsRequired()
                         .HasColumnType("varchar(20)");
 
                     b.Property<DateTime>("Date");
 
+                    b.Property<double>("Price");
+
                     b.Property<int>("Quantity");
 
-                    b.Property<string>("Type")
-                        .HasColumnType("varchar(6)");
+                    b.Property<decimal>("Status")
+                        .HasColumnType("decimal(1)");
 
-                    b.Property<decimal>("Value")
-                        .HasColumnType("decimal(12,2)");
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("varchar(6)");
 
                     b.HasKey("Id");
 
@@ -48,12 +52,12 @@ namespace InvestManager.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Asset")
+                        .IsRequired()
                         .HasColumnType("varchar(20)");
 
-                    b.Property<int>("Quantity");
+                    b.Property<double>("Price");
 
-                    b.Property<decimal>("Value")
-                        .HasColumnType("decimal(12,2)");
+                    b.Property<int>("Quantity");
 
                     b.HasKey("Id");
 

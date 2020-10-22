@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace InvestManager.Models
 {
@@ -6,23 +7,31 @@ namespace InvestManager.Models
     {
         public int Id { get; set; }
 
+        [Required(ErrorMessage = "{0} required")]
         [Column(TypeName = "varchar(20)")]
-        public string Asset{ get; set; }
+        [Display(Name = "Ativo")]
+        public string Asset { get; set; }
 
-        [Column(TypeName = "decimal(12,2)")]
-        public decimal Value{ get; set; }
+        [Required(ErrorMessage = "{0} required")]
+        [Range(0, double.MaxValue, ErrorMessage = "{0} deve ser superior a {1}")]
+        [DisplayFormat(DataFormatString = "{0:F2}")]
+        [Display(Name = "Preço")]
+        public double Price { get; set; }
 
+        [Required(ErrorMessage = "{0} required")]
+        [Range(0, int.MaxValue, ErrorMessage = "{0} deve ser superior a {1}")]
+        [Display(Name = "Quantidade")]
         public int Quantity { get; set; }
 
         public Share()
         {
         }
 
-        public Share(int id, string asset, decimal value, int quantity)
+        public Share(int id, string asset, double price, int quantity)
         {
             Id = id;
             Asset = asset;
-            Value = value;
+            Price = price;
             Quantity = quantity;
         }
     }

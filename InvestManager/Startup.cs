@@ -12,6 +12,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using InvestManager.Models;
 using InvestManager.Data;
+using InvestManager.Services;
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
 
 namespace InvestManager
 {
@@ -41,6 +44,7 @@ namespace InvestManager
                         builder.MigrationsAssembly("InvestManager")));
 
             services.AddScoped<SeedingService>();
+            services.AddScoped<OperationService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

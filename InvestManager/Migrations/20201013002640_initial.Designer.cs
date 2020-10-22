@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InvestManager.Migrations
 {
     [DbContext(typeof(InvestManagerContext))]
-    [Migration("20201012181749_init")]
-    partial class init
+    [Migration("20201013002640_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -25,21 +25,54 @@ namespace InvestManager.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("Asset")
+                        .IsRequired()
                         .HasColumnType("varchar(20)");
 
                     b.Property<DateTime>("Date");
 
+                    b.Property<double>("Price");
+
                     b.Property<int>("Quantity");
 
-                    b.Property<string>("Type")
-                        .HasColumnType("varchar(6)");
+                    b.Property<decimal>("Status")
+                        .HasColumnType("decimal(1)");
 
-                    b.Property<decimal>("Value")
-                        .HasColumnType("decimal(12,2)");
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("varchar(6)");
 
                     b.HasKey("Id");
 
                     b.ToTable("Operation");
+                });
+
+            modelBuilder.Entity("InvestManager.Models.Share", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Asset")
+                        .IsRequired()
+                        .HasColumnType("varchar(20)");
+
+                    b.Property<int?>("OperationId");
+
+                    b.Property<double>("Price");
+
+                    b.Property<int>("Quantity");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OperationId");
+
+                    b.ToTable("Share");
+                });
+
+            modelBuilder.Entity("InvestManager.Models.Share", b =>
+                {
+                    b.HasOne("InvestManager.Models.Operation")
+                        .WithMany("Shares")
+                        .HasForeignKey("OperationId");
                 });
 #pragma warning restore 612, 618
         }

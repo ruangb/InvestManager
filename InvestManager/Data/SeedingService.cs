@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using InvestManager.Models;
+using static InvestManager.Models.Enums;
+using static InvestManager.Models.Operation;
 
 namespace InvestManager.Data
 {
@@ -18,7 +22,7 @@ namespace InvestManager.Data
             if (_context.Operation.Any() || _context.Share.Any())
                 return;
 
-            Operation op1 = new Operation(2, "AZUL4", Convert.ToDecimal(24.53), 10, DateTime.Now, "Compra");
+            Operation op1 = new Operation(2, "AZUL4", 24.53, 10, DateTime.Now, "Venda");
 
             _context.Add(op1);
 
