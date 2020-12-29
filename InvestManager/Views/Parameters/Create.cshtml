@@ -1,0 +1,47 @@
+﻿@model InvestManager.Models.Parameter
+
+@{
+    ViewData["Title"] = "Cadastrar Parâmetros";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="TradingFee" class="control-label"></label>
+                <input asp-for="TradingFee" class="form-control" />
+                <span asp-validation-for="TradingFee" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LiquidityFee" class="control-label"></label>
+                <input asp-for="LiquidityFee" class="form-control" />
+                <span asp-validation-for="LiquidityFee" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        $.validator.methods.range = function (value, element, param) {
+            var globalizedValue = value.replace(",", ".");
+            return this.optional(element) || (globalizedValue >= param[0] && globalizedValue <= param[1]);
+        }
+        $.validator.methods.number = function (value, element) {
+            return this.optional(element) || /-?(?:\d+|\d{1,3}(?:[\s\.,]\d{3})+)(?:[\.,]\d+)?$/.test(value);
+        }
+    </script>
+}

@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InvestManager.Migrations
 {
     [DbContext(typeof(InvestManagerContext))]
-    [Migration("20201013002946_ModelUpdated")]
-    partial class ModelUpdated
+    [Migration("20201113002412_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -30,7 +30,8 @@ namespace InvestManager.Migrations
 
                     b.Property<DateTime>("Date");
 
-                    b.Property<double>("Price");
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(7,2)");
 
                     b.Property<int>("Quantity");
 
@@ -46,22 +47,20 @@ namespace InvestManager.Migrations
                     b.ToTable("Operation");
                 });
 
-            modelBuilder.Entity("InvestManager.Models.Share", b =>
+            modelBuilder.Entity("InvestManager.Models.Parameter", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Asset")
-                        .IsRequired()
-                        .HasColumnType("varchar(20)");
+                    b.Property<decimal>("LiquidityFee")
+                        .HasColumnType("decimal(4,4)");
 
-                    b.Property<double>("Price");
-
-                    b.Property<int>("Quantity");
+                    b.Property<decimal>("TradingFee")
+                        .HasColumnType("decimal(5,5)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Share");
+                    b.ToTable("Parameter");
                 });
 #pragma warning restore 612, 618
         }

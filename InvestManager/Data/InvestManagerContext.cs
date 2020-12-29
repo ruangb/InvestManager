@@ -10,6 +10,6 @@ namespace InvestManager.Models
         }
 
         public DbSet<Operation> Operation { get; set; }
-        public DbSet<Share> Share { get; set; }
+        public DbSet<Parameter> Parameter { get; set; }
     }
 }

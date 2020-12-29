@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using static InvestManager.Models.Enums;
 
 namespace InvestManager.Models
 {
@@ -17,10 +15,11 @@ namespace InvestManager.Models
         public string Asset{ get; set; }
 
         [Required(ErrorMessage = "{0} required")]
-        [Range(0, double.MaxValue, ErrorMessage = "{0} deve ser superior a {1}")]
         [DisplayFormat(DataFormatString = "{0:F2}")]
+        [Column(TypeName = "decimal(7,2)")]
+        [DataType(DataType.Currency)]
         [Display(Name = "Preço")]
-        public double Price{ get; set; }
+        public decimal Price{ get; set; }
 
         [Required(ErrorMessage = "{0} required")]
         [Range(0, int.MaxValue, ErrorMessage = "{0} deve ser superior a {1}")]
@@ -43,13 +42,34 @@ namespace InvestManager.Models
         public decimal Status { get; set; }
 
         [NotMapped]
+        [DisplayFormat(DataFormatString = "{0:F2}")]
+        [Column(TypeName = "decimal(7,2)")]
+        [DataType(DataType.Currency)]
+        [Display(Name = "Valor Investido")]
+        public decimal InvestValue { get; set; }
+
+        [NotMapped]
+        [DisplayFormat(DataFormatString = "{0:F2}")]
+        [Column(TypeName = "decimal(7,2)")]
+        [DataType(DataType.Currency)]
+        [Display(Name = "Rentabilidade R$")]
+        public decimal RentabilityValue { get; set; }
+
+        [NotMapped]
+        [DisplayFormat(DataFormatString = "{0:P2}")]
+        [Column(TypeName = "decimal(7,2)")]
+        [DataType(DataType.Currency)]
+        [Display(Name = "Rentabilidade %")]
+        public decimal RentabilityPercentage { get; set; }
+
+        [NotMapped]
         public IList<string> ListType { get; set; } 
 
         public Operation()
         {
         }
 
-        public Operation(int id, string asset, double price, int quantity, DateTime date, string type)
+        public Operation(int id, string asset, decimal price, int quantity, DateTime date, string type)
         {
             Id = id;
             Asset = asset;

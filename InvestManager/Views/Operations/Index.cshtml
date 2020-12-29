@@ -1,6 +1,7 @@
 ﻿@model IEnumerable<InvestManager.Models.Operation>
+
 @{
-    ViewData["Title"] = "Operations";
+    ViewData["Title"] = "Operações";
 }
 
 <h2>@ViewData["Title"]</h2>
@@ -13,8 +14,9 @@
     <thead>
         <tr class="success">
             <th>@Html.DisplayNameFor(model => model.Asset)</th>
-            <th>@Html.DisplayNameFor(model => model.Price)</th>
             <th>@Html.DisplayNameFor(model => model.Quantity)</th>
+            <th>@Html.DisplayNameFor(model => model.Price)</th>
+            <th>@Html.Label("Total")</th>
             <th>@Html.DisplayNameFor(model => model.Date)</th>
             <th>@Html.DisplayNameFor(model => model.Type)</th>
             <th></th>
@@ -28,10 +30,13 @@
                 @Html.DisplayFor(modelItem => item.Asset)
             </td>
             <td>
+                @Html.DisplayFor(modelItem => item.Quantity)
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.Price)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Quantity)
+                @Html.DisplayFor(modelItem => item.InvestValue)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Date)

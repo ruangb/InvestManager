@@ -1,0 +1,30 @@
+﻿@model InvestManager.Models.Parameter
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Parameter</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.TradingFee)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.TradingFee)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.LiquidityFee)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.LiquidityFee)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

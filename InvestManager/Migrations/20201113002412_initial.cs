@@ -15,7 +15,7 @@ namespace InvestManager.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Asset = table.Column<string>(type: "varchar(20)", nullable: false),
-                    Price = table.Column<double>(nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(7,2)", nullable: false),
                     Quantity = table.Column<int>(nullable: false),
                     Date = table.Column<DateTime>(nullable: false),
                     Type = table.Column<string>(type: "varchar(6)", nullable: false),
@@ -27,40 +27,27 @@ namespace InvestManager.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Share",
+                name: "Parameter",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Asset = table.Column<string>(type: "varchar(20)", nullable: false),
-                    Price = table.Column<double>(nullable: false),
-                    Quantity = table.Column<int>(nullable: false),
-                    OperationId = table.Column<int>(nullable: true)
+                    TradingFee = table.Column<decimal>(type: "decimal(5,5)", nullable: false),
+                    LiquidityFee = table.Column<decimal>(type: "decimal(4,4)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Share", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Share_Operation_OperationId",
-                        column: x => x.OperationId,
-                        principalTable: "Operation",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                    table.PrimaryKey("PK_Parameter", x => x.Id);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Share_OperationId",
-                table: "Share",
-                column: "OperationId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Share");
+                name: "Operation");
 
             migrationBuilder.DropTable(
-                name: "Operation");
+                name: "Parameter");
         }
     }
 }
