@@ -138,7 +138,7 @@ namespace InvestManager.Controllers
                 }
             }
 
-            ViewData["RentabilityTotal"] = string.Format("Rentabilidade Total R$ {0:F2} / {1:P2}", rentabilityTotalValue / registerSoldQuantity, rentabilityTotalPercentage / registerSoldQuantity);
+            ViewBag.RentabilityTotal = string.Format("Rentabilidade Total R$ {0:F2} / {1:P2}", rentabilityTotalValue / registerSoldQuantity, rentabilityTotalPercentage / registerSoldQuantity);
 
             return View(listOperation);
         }
