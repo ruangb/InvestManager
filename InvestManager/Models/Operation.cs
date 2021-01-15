@@ -78,10 +78,5 @@ namespace InvestManager.Models
             Date = date;
             Type = type;
         }
-
-        //public void ExecuteOperation(Share share)
-        //{
-        //    Shares.Add(share);
-        //}
     }
 }

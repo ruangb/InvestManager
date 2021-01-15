@@ -81,7 +81,7 @@ namespace InvestManager.Controllers
                 }
             }
 
-            return View(listOperation);
+            return View(listOperation); 
         }
 
         public async Task<IActionResult> Liquidation()
