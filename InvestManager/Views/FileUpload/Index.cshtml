@@ -1,13 +1,11 @@
-﻿@model IEnumerable<InvestManager.Models.Operation>
-@{
+﻿@{
     ViewData["Title"] = "Realizar Upload";
 }
 
 <h2>@ViewData["Title"]</h2>
 
-@using (Html.BeginForm("ReadFile", "FileUpload", FormMethod.Post, new { enctype = "multipart/form-data" }))
-{
-    <input type="file" name="file" />
-    <input type="submit" name="Submit" id="Submit" value="Upload" />
-}
+<form method="post" enctype="multipart/form-data" asp-controller="FileUpload" asp-action="Index">
+    <input type="file" name="archives" multiple />
+    <input type="submit" value="Enviar Arquivo" />
+</form>
 
