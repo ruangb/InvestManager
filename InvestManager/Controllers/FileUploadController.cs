@@ -8,6 +8,10 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 using System.Linq;
+using iText.Kernel.Pdf.Canvas.Parser.Listener;
+using System.Text;
+using iText.Kernel.Pdf.Canvas.Parser;
+using System.Data.OleDb;
 
 namespace InvestManager.Controllers
 {
@@ -45,38 +49,26 @@ namespace InvestManager.Controllers
                     ViewData["Erro"] = "Error: Arquivo(s) não selecionado(s)";
                     return View(ViewData);
                 }
-                // < define a pasta onde vamos salvar os arquivos >
-                string pasta = "Arquivos_Usuario";
-                // Define um nome para o arquivo enviado incluindo o sufixo obtido de milesegundos
-                string nomeArquivo = "Usuario_arquivo_" + DateTime.Now.Millisecond.ToString();
-                //verifica qual o tipo de arquivo : jpg, gif, png, pdf ou tmp
-                if (arquivo.FileName.Contains(".jpg"))
-                    nomeArquivo += ".jpg";
-                else if (arquivo.FileName.Contains(".gif"))
-                    nomeArquivo += ".gif";
-                else if (arquivo.FileName.Contains(".png"))
-                    nomeArquivo += ".png";
-                else if (arquivo.FileName.Contains(".pdf"))
-                    nomeArquivo += ".pdf";
-                else
-                    nomeArquivo += ".tmp";
-                //< obtém o caminho físico da pasta wwwroot >
-                string caminho_WebRoot = _appEnvironment.WebRootPath;
-                // monta o caminho onde vamos salvar o arquivo : 
-                // ~\wwwroot\Arquivos\Arquivos_Usuario\Recebidos
-                string caminhoDestinoArquivo = caminho_WebRoot + "\\Arquivos\\" + pasta + "\\";
-                // incluir a pasta Recebidos e o nome do arquivo enviado : 
-                // ~\wwwroot\Arquivos\Arquivos_Usuario\Recebidos\
-                string caminhoDestinoArquivoOriginal = caminhoDestinoArquivo + "\\Recebidos\\" + nomeArquivo;
-                //copia o arquivo para o local de destino original
-                using (var stream = new FileStream(caminhoDestinoArquivoOriginal, FileMode.Create))
+
+                using (OleDbConnection connection = new OleDbConnection("inserir excel aqui"))
                 {
-                    await arquivo.CopyToAsync(stream);
+                    connection.Open();
+                    OleDbCommand command = new OleDbCommand("select * from [Sheet1$]", connection);
+                    using (OleDbDataReader dr = command.ExecuteReader())
+                    {
+                        while (dr.Read())
+                        {
+                            var row1Col0 = dr[0];
+                            Console.WriteLine(row1Col0);
+                        }
+                    }
                 }
+
             }
             //monta a ViewData que será exibida na view como resultado do envio 
             ViewData["Resultado"] = $"{archives.Count} arquivos foram enviados ao servidor, " +
              $"com tamanho total de : {tamanhoArquivos} bytes";
+
             //retorna a viewdata
             return View(ViewData);
         }
