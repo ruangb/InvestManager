@@ -1,17 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using iText;
-using System;
-using iText.Kernel.Pdf;
-using System.IO;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Http;
-using System.Linq;
-using iText.Kernel.Pdf.Canvas.Parser.Listener;
-using System.Text;
-using iText.Kernel.Pdf.Canvas.Parser;
-using System.Data.OleDb;
+using System.Data;
+using ClosedXML.Excel;
 
 namespace InvestManager.Controllers
 {
@@ -30,47 +23,44 @@ namespace InvestManager.Controllers
             return View();
         }
 
-        //método para enviar os arquivos usando a interface IFormFile
         [HttpPost("FileUpload")]
         public async Task<IActionResult> Index(List<IFormFile> archives)
         {
-            long tamanhoArquivos = archives.Sum(f => f.Length);
-            // caminho completo do arquivo na localização temporária
-            var caminhoArquivo = Path.GetTempFileName();
-
-            // processa os arquivo enviados
-            //percorre a lista de arquivos selecionados
-            foreach (var arquivo in archives)
+            foreach (var archive in archives)
             {
-                //verifica se existem arquivos 
-                if (arquivo == null || arquivo.Length == 0)
-                {
-                    //retorna a viewdata com erro
-                    ViewData["Erro"] = "Error: Arquivo(s) não selecionado(s)";
-                    return View(ViewData);
-                }
+                DataTable dt = new DataTable();
 
-                using (OleDbConnection connection = new OleDbConnection("inserir excel aqui"))
+                using (XLWorkbook workbook = new XLWorkbook(archive.OpenReadStream()))
                 {
-                    connection.Open();
-                    OleDbCommand command = new OleDbCommand("select * from [Sheet1$]", connection);
-                    using (OleDbDataReader dr = command.ExecuteReader())
+                    bool isFirstRow = true;
+                    var rows = workbook.Worksheet(1).RowsUsed();
+
+                    foreach (var row in rows)
                     {
-                        while (dr.Read())
+                        if (isFirstRow)
                         {
-                            var row1Col0 = dr[0];
-                            Console.WriteLine(row1Col0);
+                            foreach (IXLCell cell in row.Cells())
+                                dt.Columns.Add(cell.Value.ToString());
+
+                            isFirstRow = false;
+
+                            IXLCells teste = row.Cells();
+                        }
+                        else
+                        {
+                            dt.Rows.Add();
+
+                            int i = 0;
+
+                            foreach (IXLCell cell in row.Cells())
+                                dt.Rows[dt.Rows.Count - 1][i++] = cell.Value.ToString();
                         }
                     }
                 }
-
             }
-            //monta a ViewData que será exibida na view como resultado do envio 
-            ViewData["Resultado"] = $"{archives.Count} arquivos foram enviados ao servidor, " +
-             $"com tamanho total de : {tamanhoArquivos} bytes";
 
-            //retorna a viewdata
-            return View(ViewData);
+            return Index();
         }
+
     }
 }
