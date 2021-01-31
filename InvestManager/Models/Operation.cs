@@ -12,14 +12,14 @@ namespace InvestManager.Models
         [Required(ErrorMessage = "{0} required")]
         [Column(TypeName = "varchar(20)")]
         [Display(Name = "Ativo")]
-        public string Asset{ get; set; }
+        public string Asset { get; set; }
 
         [Required(ErrorMessage = "{0} required")]
         [DisplayFormat(DataFormatString = "{0:F2}")]
         [Column(TypeName = "decimal(7,2)")]
         [DataType(DataType.Currency)]
         [Display(Name = "Preço")]
-        public decimal Price{ get; set; }
+        public decimal Price { get; set; }
 
         [Required(ErrorMessage = "{0} required")]
         [Range(0, int.MaxValue, ErrorMessage = "{0} deve ser superior a {1}")]

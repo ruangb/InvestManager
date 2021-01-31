@@ -10,6 +10,7 @@ using InvestManager.Models;
 using InvestManager.Data;
 using InvestManager.Services;
 using Microsoft.AspNetCore.Localization;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace InvestManager
 {
@@ -35,8 +36,11 @@ namespace InvestManager
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddDbContext<InvestManagerContext>(options =>
-                    options.UseMySql(Configuration.GetConnectionString("InvestManagerContext"), builder =>
-                        builder.MigrationsAssembly("InvestManager")));
+            {
+                options.UseMySql(Configuration.GetConnectionString("InvestManagerContext"), builder =>
+                    builder.MigrationsAssembly("InvestManager"));
+                options.ConfigureWarnings(x => x.Ignore(RelationalEventId.AmbientTransactionWarning));
+            });
 
             services.AddScoped<SeedingService>();
             services.AddScoped<OperationService>();

@@ -1,21 +1,25 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using ClosedXML.Excel;
+using InvestManager.Models;
+using InvestManager.Services;
+using System.Transactions;
 
 namespace InvestManager.Controllers
 {
     public class FileUploadController : Controller
     {
-        //Define uma instância de IHostingEnvironment
-        IHostingEnvironment _appEnvironment;
-        //Injeta a instância no construtor para poder usar os recursos
-        public FileUploadController(IHostingEnvironment env)
+        private readonly OperationService _operationService;
+
+        public FileUploadController(OperationService operationService)
         {
-            _appEnvironment = env;
+            _operationService = operationService;
         }
 
         public IActionResult Index()
@@ -56,11 +60,37 @@ namespace InvestManager.Controllers
                                 dt.Rows[dt.Rows.Count - 1][i++] = cell.Value.ToString();
                         }
                     }
+                    IList<DataRow> dss = dt.Rows.Cast<DataRow>().ToList();
+
+                    IList<Operation> listOperation = new List<Operation>();
+
+                    foreach (var item in dss)
+                    {
+                        Operation operation = new Operation();
+
+                        operation.Date     = Convert.ToDateTime(item.ItemArray[0].ToString().Trim());
+                        operation.Type     = item.ItemArray[2].ToString().Trim() == "C" ? Enums.GetDescription(Enums.OperationType.Purchase) : Enums.GetDescription(Enums.OperationType.Sale);
+                        operation.Asset    = item.ItemArray[5].ToString().Trim().EndsWith("F") ? item.ItemArray[5].ToString().Trim().Remove(item.ItemArray[5].ToString().Trim().Length -1) : item.ItemArray[5].ToString().Trim();
+                        operation.Quantity = Convert.ToInt32(item.ItemArray[7].ToString().Trim());
+                        operation.Price    = Convert.ToDecimal(item.ItemArray[8].ToString().Trim());
+                        operation.Status   = 0;
+
+                        listOperation.Add(operation);
+                    }
+
+                    bool allSaved = await _operationService.InsertAsync(listOperation);
+
+                    if (!allSaved)
+                    {
+                        ViewBag.Range = "Não foi tudo salvo";
+                        return Index();
+                    }
                 }
             }
 
+            ViewBag.Range = "Foi tudo salvo";
+
             return Index();
         }
-
     }
 }

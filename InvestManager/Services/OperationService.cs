@@ -22,10 +22,29 @@ namespace InvestManager.Services
             return await _context.Operation.ToListAsync();
         }
 
-        public async Task InsertAsync(Operation obj)
+        public async Task<int> InsertAsync(Operation obj)
         {
             _context.Add(obj);
-            await _context.SaveChangesAsync();
+            return await _context.SaveChangesAsync();
+        }
+
+        public async Task<bool> InsertAsync(IList<Operation> obj)
+        {
+            foreach (var item in obj)
+            {
+                _context.Add(item);
+            }
+            
+            try
+            {
+                var affectedRows = await _context.SaveChangesAsync();
+
+                return (obj.Count == affectedRows);
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
 
         public async Task<Operation> FindByIdAsync(int id)
