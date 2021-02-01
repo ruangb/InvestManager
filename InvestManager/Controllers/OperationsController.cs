@@ -54,8 +54,6 @@ namespace InvestManager.Controllers
 
             var listGroup = list.GroupBy(x => x.Asset);
 
-            IEnumerable<Operation> smths = listGroup.SelectMany(group => group);
-
             foreach (var item in listGroup)
             {
                 Operation operation = new Operation();
@@ -73,9 +71,9 @@ namespace InvestManager.Controllers
                 {
                     pricePurchased = list.Where(x => x.Asset == item.Key && x.Type == Enums.OperationType.Purchase.GetDescription()).Select(x => x.Price * x.Quantity).Sum();
 
-                    operation.Price = (pricePurchased / quantityPurchased) - ((pricePurchased / quantityPurchased) * (listParameter[0].TradingFee / 100));
-
-                    operation.Asset = item.Key;
+                    operation.Price       = (pricePurchased / quantityPurchased) - ((pricePurchased / quantityPurchased) * (listParameter[0].TradingFee / 100));
+                    operation.Asset       = item.Key;
+                    operation.InvestValue = operation.Price * operation.Quantity;
 
                     listOperation.Add(operation);
                 }
