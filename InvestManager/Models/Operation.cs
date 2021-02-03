@@ -15,7 +15,7 @@ namespace InvestManager.Models
         public string Asset { get; set; }
 
         [Required(ErrorMessage = "{0} required")]
-        [DisplayFormat(DataFormatString = "{0:F2}")]
+        [DisplayFormat(DataFormatString = "{0:N2}")]
         [Column(TypeName = "decimal(7,2)")]
         [DataType(DataType.Currency)]
         [Display(Name = "Preço")]
@@ -42,14 +42,14 @@ namespace InvestManager.Models
         public decimal Status { get; set; }
 
         [NotMapped]
-        [DisplayFormat(DataFormatString = "{0:F2}")]
+        [DisplayFormat(DataFormatString = "{0:N2}")]
         [Column(TypeName = "decimal(7,2)")]
         [DataType(DataType.Currency)]
         [Display(Name = "Valor Investido")]
         public decimal InvestValue { get; set; }
 
         [NotMapped]
-        [DisplayFormat(DataFormatString = "{0:F2}")]
+        [DisplayFormat(DataFormatString = "{0:N2}")]
         [Column(TypeName = "decimal(7,2)")]
         [DataType(DataType.Currency)]
         [Display(Name = "Rentabilidade R$")]
