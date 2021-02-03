@@ -7,7 +7,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using InvestManager.Models;
-using InvestManager.Data;
 using InvestManager.Services;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -42,13 +41,12 @@ namespace InvestManager
                 options.ConfigureWarnings(x => x.Ignore(RelationalEventId.AmbientTransactionWarning));
             });
 
-            services.AddScoped<SeedingService>();
             services.AddScoped<OperationService>();
             services.AddScoped<ParameterService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, SeedingService seedingService)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             // Definindo a cultura padrão: pt-BR
             var supportedCultures = new[] { new CultureInfo("pt-BR") };
@@ -62,7 +60,6 @@ namespace InvestManager
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                seedingService.Seed();
             }
             else
             {
