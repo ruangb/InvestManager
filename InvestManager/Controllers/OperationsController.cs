@@ -105,6 +105,8 @@ namespace InvestManager.Controllers
                 }
             }
 
+            listOperation = listOperation.OrderByDescending(x => x.InvestValue).ThenBy(x => x.Asset).ToList();
+
             return View(listOperation); 
         }
 
@@ -163,6 +165,8 @@ namespace InvestManager.Controllers
             }
 
             ViewBag.RentabilityTotal = string.Format("Rentabilidade Total R$ {0:F2} / {1:P2}", rentabilityTotalValue, rentabilityTotalPercentage / registerSoldQuantity);
+
+            listOperation = listOperation.OrderBy(x => x.Asset).ToList();
 
             return View(listOperation);
         }
