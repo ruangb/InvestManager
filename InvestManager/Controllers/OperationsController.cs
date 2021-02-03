@@ -40,7 +40,7 @@ namespace InvestManager.Controllers
                 }
             }
 
-            listOperation.OrderBy(x => x.Date).ThenBy(x => x.Asset).ThenByDescending(x => x.Price);
+            listOperation = listOperation.OrderBy(x => x.Date).ThenBy(x => x.Asset).ThenByDescending(x => x.Price).ToList();
 
             return View(listOperation);
         }

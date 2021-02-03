@@ -6754,4 +6754,10 @@ button.close {
     display: none !important;
   }
 }
+
+.noHover {
+    pointer-events: none;
+    text-decoration: none;
+    color:aliceblue;
+}
 /*# sourceMappingURL=bootstrap.css.map */
