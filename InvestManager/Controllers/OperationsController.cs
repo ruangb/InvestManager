@@ -61,6 +61,11 @@ namespace InvestManager.Controllers
                 int quantityPurchased;
                 int quantitySold;
                 decimal pricePurchased;
+                decimal priceSold;
+
+                int count = 0;
+                decimal averagePrice = 0;
+                decimal quantity = 0;
 
                 quantityPurchased = list.Where(x => x.Asset == item.Key && x.Type == Enums.OperationType.Purchase.GetDescription()).Sum(x => x.Quantity);
                 quantitySold = list.Where(x => x.Asset == item.Key && x.Type == Enums.OperationType.Sale.GetDescription()).Sum(x => x.Quantity);
@@ -70,8 +75,29 @@ namespace InvestManager.Controllers
                 if (operation.Quantity > 0)
                 {
                     pricePurchased = list.Where(x => x.Asset == item.Key && x.Type == Enums.OperationType.Purchase.GetDescription()).Select(x => x.Price * x.Quantity).Sum();
+                    priceSold      = list.Where(x => x.Asset == item.Key && x.Type == Enums.OperationType.Sale.GetDescription()).Select(x => x.Price * x.Quantity).Sum();
 
-                    operation.Price       = (pricePurchased / quantityPurchased) - ((pricePurchased / quantityPurchased) * (listParameter[0].TradingFee / 100));
+                    IList<Operation> listByAsset = list.Where(x => x.Asset == item.Key).OrderBy(x => x.Date).ToList();
+
+                    foreach (var op in listByAsset)
+                    {
+                        if (count == 0 && op.Type == Enums.OperationType.Purchase.GetDescription())
+                        {
+                            averagePrice = op.Price;
+                            quantity = op.Quantity;
+
+                            count++;
+                        }
+                        else if (op.Type == Enums.OperationType.Sale.GetDescription())
+                            quantity -= op.Quantity;
+                        else
+                        {
+                            averagePrice = ((averagePrice * quantity) + (op.Price * op.Quantity)) / (quantity + op.Quantity);
+                            quantity += op.Quantity;
+                        }
+                    }
+
+                    operation.Price       = averagePrice;
                     operation.Asset       = item.Key;
                     operation.InvestValue = operation.Price * operation.Quantity;
 
