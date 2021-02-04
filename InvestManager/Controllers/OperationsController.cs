@@ -112,6 +112,106 @@ namespace InvestManager.Controllers
 
         public async Task<IActionResult> Liquidation()
         {
+            var list = await _operationService.FindAllAsync();
+            var listParameter = await _parameterService.FindAllAsync();
+
+            IList<Operation> listOperation = new List<Operation>();
+
+            decimal rentabilityTotalValue = 0;
+            decimal rentabilityTotalPercentage = 0;
+            int registerSoldQuantity = 0;
+
+            var listGroup = list.Where(x => x.Type == Enums.OperationType.Purchase.GetDescription()).GroupBy(x => x.Asset);
+
+            IEnumerable<Operation> smths = listGroup.SelectMany(group => group);
+
+            foreach (var item in listGroup)
+            {
+                Operation operation = new Operation();
+
+                int soldQuantity = list.Where(x => x.Asset == item.Key && x.Type == Enums.OperationType.Sale.GetDescription()).Sum(x => x.Quantity);
+
+                if (soldQuantity > 0)
+                {
+                    int count = 0;
+                    decimal purchaseTotalPrice = 0;
+                    decimal soldTotalPrice = 0;
+                    decimal rentabilityValue = 0;
+                    int purchaseQuantity = 0;
+                    soldQuantity = 0;
+
+                    IList<Operation> listByAsset = list.Where(x => x.Asset == item.Key).OrderBy(x => x.Date).ToList();
+
+                    foreach (var op in listByAsset)
+                    {
+                        if (count == 0 && op.Type == Enums.OperationType.Purchase.GetDescription())
+                        {
+                            purchaseTotalPrice = op.Price * op.Quantity;
+                            purchaseQuantity = op.Quantity;
+
+                            count++;
+                        }
+                        else if (op.Type == Enums.OperationType.Sale.GetDescription())
+                        {
+                            soldTotalPrice += (op.Price * op.Quantity);
+                            soldQuantity += op.Quantity;
+                        }
+                        else
+                        {
+                            purchaseTotalPrice += (op.Price * op.Quantity);
+                            purchaseQuantity += op.Quantity;
+                        }
+                    }
+
+                    if (item.Key == "STBP3")
+                    {
+
+                    }
+
+                    if (purchaseQuantity > soldQuantity)
+                    {
+                        int differenceQuantity = purchaseQuantity - soldQuantity;
+
+                        purchaseTotalPrice -= (purchaseTotalPrice / purchaseQuantity) * soldQuantity;
+                    }
+                    rentabilityValue = soldTotalPrice - purchaseTotalPrice;
+
+                    purchaseTotalPrice -= ((purchaseTotalPrice) * (listParameter[0].TradingFee / 100));
+
+                    operation.Price = (purchaseTotalPrice / purchaseQuantity);
+                    operation.Quantity = soldQuantity;
+
+                    //decimal totalPriceSold = list.Where(x => x.Asset == item.Key && x.Type == Enums.OperationType.Sale.GetDescription()).Select(x => x.Price * x.Quantity).Sum();
+
+                    //totalPriceSold -= (totalPriceSold * (listParameter[0].LiquidityFee / 100));
+
+                    //operation.RentabilityValue = ((soldTotalPrice / soldQuantity) - operation.Price) * soldQuantity;
+
+                    operation.RentabilityValue = /*soldTotalPrice - purchaseTotalPrice*/ rentabilityValue;
+
+                    operation.RentabilityPercentage = (((soldTotalPrice / soldQuantity) - operation.Price) * soldQuantity) / (operation.Price * soldQuantity);
+                    operation.RentabilityPercentage -= operation.RentabilityPercentage * (listParameter[0].LiquidityFee / 100);
+
+                    rentabilityTotalValue += operation.RentabilityValue;
+                    rentabilityTotalPercentage += operation.RentabilityPercentage;
+
+                    operation.Asset = item.Key;
+
+                    listOperation.Add(operation);
+
+                    registerSoldQuantity++;
+                }
+            }
+
+            ViewBag.RentabilityTotal = string.Format("Rentabilidade Total R$ {0:F2} / {1:P2}", rentabilityTotalValue, rentabilityTotalPercentage / registerSoldQuantity);
+
+            listOperation = listOperation.OrderBy(x => x.Asset).ToList();
+
+            return View(listOperation);
+        }
+
+        public async Task<IActionResult> Liquidation2()
+        {
             var list          = await _operationService.FindAllAsync();
             var listParameter = await _parameterService.FindAllAsync();
 
@@ -129,38 +229,35 @@ namespace InvestManager.Controllers
             {
                 Operation operation = new Operation();
 
-                int quantityPurchased;
-                int quantitySold;
-                decimal pricePurchased;
-
-                quantitySold = list.Where(x => x.Asset == item.Key && x.Type == Enums.OperationType.Sale.GetDescription()).Sum(x => x.Quantity);
+                int quantitySold = list.Where(x => x.Asset == item.Key && x.Type == Enums.OperationType.Sale.GetDescription()).Sum(x => x.Quantity);
 
                 if (quantitySold > 0)
                 {
-                    quantityPurchased = list.Where(x => x.Asset == item.Key && x.Type == Enums.OperationType.Purchase.GetDescription()).Sum(x => x.Quantity);
-                    pricePurchased = list.Where(x => x.Asset == item.Key && x.Type == Enums.OperationType.Purchase.GetDescription()).Select(x => x.Price * x.Quantity).Sum();
+                    //int quantityPurchased = list.Where(x => x.Asset == item.Key && x.Type == Enums.OperationType.Purchase.GetDescription()).Sum(x => x.Quantity);
+                    //decimal totalPricePurchased = list.Where(x => x.Asset == item.Key && x.Type == Enums.OperationType.Purchase.GetDescription()).Select(x => x.Price * x.Quantity).Sum();
 
-                    operation.Price = pricePurchased / quantityPurchased;
-                    operation.Quantity = quantitySold;
+                    //totalPricePurchased -= ((totalPricePurchased) * (listParameter[0].TradingFee / 100));
 
-                    decimal priceSold;
+                    //operation.Price = (totalPricePurchased / quantityPurchased);
+                    //operation.Quantity = quantitySold;
 
-                    priceSold = list.Where(x => x.Asset == item.Key && x.Type == Enums.OperationType.Sale.GetDescription()).Select(x => x.Price * x.Quantity).Sum();
+                    //decimal totalPriceSold = list.Where(x => x.Asset == item.Key && x.Type == Enums.OperationType.Sale.GetDescription()).Select(x => x.Price * x.Quantity).Sum();
 
-                    operation.RentabilityValue = ((priceSold / quantitySold) - operation.Price) * quantitySold;
-                    operation.RentabilityValue -= operation.RentabilityValue * (listParameter[0].LiquidityFee / 100);
+                    //totalPriceSold -= (totalPriceSold * (listParameter[0].LiquidityFee / 100));
 
-                    operation.RentabilityPercentage = (((priceSold / quantitySold) - operation.Price) * quantitySold) / (operation.Price * quantitySold);
-                    operation.RentabilityPercentage -= operation.RentabilityPercentage * (listParameter[0].LiquidityFee / 100);
+                    //operation.RentabilityValue = ((totalPriceSold / quantitySold) - operation.Price) * quantitySold;
 
-                    rentabilityTotalValue += operation.RentabilityValue;
-                    rentabilityTotalPercentage += operation.RentabilityPercentage;
+                    //operation.RentabilityPercentage = (((totalPriceSold / quantitySold) - operation.Price) * quantitySold) / (operation.Price * quantitySold);
+                    //operation.RentabilityPercentage -= operation.RentabilityPercentage * (listParameter[0].LiquidityFee / 100);
 
-                    operation.Asset = item.Key;
+                    //rentabilityTotalValue += operation.RentabilityValue;
+                    //rentabilityTotalPercentage += operation.RentabilityPercentage;
 
-                    listOperation.Add(operation);
+                    //operation.Asset = item.Key;
 
-                    registerSoldQuantity++;
+                    //listOperation.Add(operation);
+
+                    //registerSoldQuantity++;
                 }
             }
 
