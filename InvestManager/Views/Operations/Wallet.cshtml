@@ -2,10 +2,9 @@
 @{
     ViewData["Title"] = "Carteira";
 }
+<br />
 
-<h2>@ViewData["Title"]</h2>
-
-<table class="table table-striped table-hover">
+<table class="table table-striped table-hover" id="dataTable">
     <thead>
         <tr class="success">
             <th>@Html.DisplayNameFor(model => model.Asset)</th>
@@ -17,20 +16,21 @@
     <tbody>
         @foreach (var item in Model)
         {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Asset)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Quantity)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.InvestValue)
-            </td>
-        </tr>   
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Asset)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Quantity)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.InvestValue)
+                </td>
+            </tr>
+
         }
     </tbody>
 </table>
