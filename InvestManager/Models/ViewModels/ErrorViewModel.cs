@@ -1,4 +1,4 @@
-namespace InvestManager.Models
+namespace InvestManager.Models.ViewModels
 {
     public class ErrorViewModel
     {

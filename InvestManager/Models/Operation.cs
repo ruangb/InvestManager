@@ -63,7 +63,16 @@ namespace InvestManager.Models
         public decimal RentabilityPercentage { get; set; }
 
         [NotMapped]
-        public IList<string> ListType { get; set; } 
+        public IList<string> ListType { get; set; }
+
+        [NotMapped]
+        public IEnumerable<string> Months { get; set; }
+
+        [NotMapped]
+        public string ReferenceMonth { get; set; }
+
+        [NotMapped]
+        public IList<Operation> Operations { get; set; }
 
         public Operation()
         {
