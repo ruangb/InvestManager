@@ -8,8 +8,6 @@ using System.Data;
 using System.Linq;
 using System.Collections.Generic;
 using System;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Globalization;
 
 namespace InvestManager.Controllers
 {
@@ -214,7 +212,7 @@ namespace InvestManager.Controllers
             if (monthIndex.Length == 1)
                 monthIndex = "0" + monthIndex;
 
-            DateTime startDate = Convert.ToDateTime($"{"01/"}{monthIndex}{"/"}{"2020"}");
+            DateTime startDate = Convert.ToDateTime($"{"01/"}{monthIndex}{"/"}{operation.ReferenceYear}");
             DateTime endDate = startDate.AddMonths(1).AddDays(-1).AddHours(23).AddMinutes(59).AddSeconds(59);
 
             decimal rentabilityTotalValue = 0;
@@ -313,7 +311,8 @@ namespace InvestManager.Controllers
 
             listOperation = listOperation.OrderBy(x => x.Asset).ToList();
 
-            operationView.Months = Enums.GetDescriptions<Enums.Month>();
+            operationView.Months     = Enums.GetDescriptions<Enums.Month>();
+            operationView.Years      = Utilities.GetPastYears();
             operationView.Operations = listOperation;
 
             return View(operationView);
@@ -324,7 +323,8 @@ namespace InvestManager.Controllers
             Operation operation = new Operation();
 
             operation.Operations = new List<Operation>();
-            operation.Months = Enums.GetDescriptions<Enums.Month>();
+            operation.Months     = Enums.GetDescriptions<Enums.Month>();
+            operation.Years      = Utilities.GetPastYears();
 
             return View(operation);
         }

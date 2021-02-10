@@ -25,6 +25,15 @@
             </select>
         </div>
         <span class="text-danger"></span>
+        <div class="col-md-2">
+            <label class="control-label">Selecione o Ano</label>
+        </div>
+        <div class="col-md-3">
+            <select asp-for="ReferenceYear" class="form-control" asp-items="@(new SelectList(Model.Years, Model.ReferenceYear))">
+                <option selected="selected" value="">Selecione uma opção</option>
+            </select>
+        </div>
+        <span class="text-danger"></span>
         <input type="submit" value="Visualizar" />
     </div>
 </form>

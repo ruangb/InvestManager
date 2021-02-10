@@ -69,6 +69,12 @@ namespace InvestManager.Models
         public IEnumerable<string> Months { get; set; }
 
         [NotMapped]
+        public string ReferenceYear { get; set; }
+
+        [NotMapped]
+        public IEnumerable<string> Years { get; set; }
+
+        [NotMapped]
         public string ReferenceMonth { get; set; }
 
         [NotMapped]
