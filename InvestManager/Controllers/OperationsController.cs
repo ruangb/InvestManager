@@ -204,16 +204,17 @@ namespace InvestManager.Controllers
             var operations = await _operationService.FindAllAsync();
             var parameters = await _parameterService.FindAllAsync();
 
-            IList<Operation> listWallet = WalletProcess(operations, parameters);
+            Operation operationView = new Operation();
 
+            IList<Operation> listWallet = WalletProcess(operations, parameters);
             IList<Operation> listOperation = new List<Operation>();
 
-            int? monthIndex = Enums.GetIndexByDescription<Enums.Month>(operation.ReferenceMonth);
+            string monthIndex = Enums.GetIndexByDescription(Enums.Month.None, operation.ReferenceMonth).ToString();
 
-            CultureInfo culture = new CultureInfo("pt-BR");
-            DateTimeFormatInfo dtfi = culture.DateTimeFormat; 
+            if (monthIndex.Length == 1)
+                monthIndex = "0" + monthIndex;
 
-            DateTime startDate = Convert.ToDateTime($"{"01/"}{""}");
+            DateTime startDate = Convert.ToDateTime($"{"01/"}{monthIndex}{"/"}{"2020"}");
             DateTime endDate = startDate.AddMonths(1).AddDays(-1).AddHours(23).AddMinutes(59).AddSeconds(59);
 
             decimal rentabilityTotalValue = 0;
@@ -224,8 +225,6 @@ namespace InvestManager.Controllers
 
             foreach (var item in listGroup)
             {
-                Operation operationView = new Operation();
-
                 int soldQuantity = operations.Where(x => x.Asset == item.Key
                                                 && x.Type == Enums.OperationType.Sale.GetDescription()
                                                 && x.Date >= startDate
@@ -248,11 +247,6 @@ namespace InvestManager.Controllers
 
                     foreach (var op in listByAsset)
                     {
-                        if (item.Key == "AZUL4")
-                        {
-
-                        }
-
                         if (count == 0 && op.Type == Enums.OperationType.Purchase.GetDescription())
                         {
                             purchaseTotalPrice = op.Price * op.Quantity;
@@ -274,10 +268,6 @@ namespace InvestManager.Controllers
 
                     if (purchaseQuantity > soldQuantity)
                     {
-                        if (item.Key == "AZUL4")
-                        {
-
-                        }
                         int preDateSoldQuantity = 0;
                         int posDateSoldQuantity = 0;
                         decimal inWalletValue = listWallet.Where(x => x.Asset == item.Key).Select(x => x.Price * x.Quantity).Sum();
@@ -312,15 +302,21 @@ namespace InvestManager.Controllers
 
                     listOperation.Add(operationView);
 
+                    operationView = new Operation();
+
                     registerSoldQuantity++;
                 }
             }
 
-            ViewBag.RentabilityTotal = string.Format("Rentabilidade Total R$ {0:N2} / {1:P2}", rentabilityTotalValue, rentabilityTotalPercentage / registerSoldQuantity);
+            if (registerSoldQuantity > 0)
+                ViewBag.RentabilityTotal = string.Format("Rentabilidade Total R$ {0:N2} / {1:P2}", rentabilityTotalValue, rentabilityTotalPercentage / registerSoldQuantity);
 
             listOperation = listOperation.OrderBy(x => x.Asset).ToList();
 
-            return View(listOperation);
+            operationView.Months = Enums.GetDescriptions<Enums.Month>();
+            operationView.Operations = listOperation;
+
+            return View(operationView);
         }
 
         public async Task<IActionResult> RentabilityPerMonth()

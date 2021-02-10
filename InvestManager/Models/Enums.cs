@@ -9,6 +9,8 @@ namespace InvestManager.Models
     {
         public enum OperationType
         {
+            [Description("Nenhum")]
+            None = 0,
             [Description("Compra")]
             Purchase = 1,
             [Description("Venda")]
@@ -17,6 +19,8 @@ namespace InvestManager.Models
 
         public enum Month
         {
+            [Description("Nenhum")]
+            None = 0,
             [Description("Janeiro")]
             January = 1,
             [Description("Fevereiro")]
@@ -64,6 +68,7 @@ namespace InvestManager.Models
             if (fieldInfo != null)
             {
                 var attrs = fieldInfo.GetCustomAttributes(typeof(DescriptionAttribute), true);
+
                 if (attrs != null && attrs.Length > 0)
                 {
                     description = ((DescriptionAttribute)attrs[0]).Description;
@@ -76,7 +81,8 @@ namespace InvestManager.Models
             return description;
         }
 
-        public static int? GetIndexByDescription<T>(string description)
+        public static int? GetIndexByDescription<T>(this T enumValue, string description) 
+            //where T : struct, IConvertible
         {
             if (!typeof(T).IsEnum)
                 return null;
@@ -85,11 +91,12 @@ namespace InvestManager.Models
 
             foreach (var item in EnumValues)
             {
-                var fieldInfo = typeof(T).GetType().GetField(item.ToString());
+                var fieldInfo = enumValue.GetType().GetField(item.ToString());
 
                 if (fieldInfo != null)
                 {
                     var attrs = fieldInfo.GetCustomAttributes(typeof(DescriptionAttribute), true);
+
                     if (attrs != null && attrs.Length > 0)
                     {
                         if (((DescriptionAttribute)attrs[0]).Description == description)

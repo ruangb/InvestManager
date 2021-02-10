@@ -14,13 +14,13 @@
 </div>
 
 <form asp-action="RentabilityPerMonth">
-    <div asp-validation-summary="All" class="text-danger"></div>
+    <div asp-validation-summary="None" class="text-danger"></div>
     <div class="form-group">
         <div class="col-md-2">
             <label class="control-label">Selecione o mês</label>
         </div>
         <div class="col-md-3">
-            <select asp-for="ReferenceMonth" class="form-control" asp-items="@(new SelectList(Model.Months))">
+            <select asp-for="ReferenceMonth" class="form-control" asp-items="@(new SelectList(Model.Months, Model.ReferenceMonth))">
                 <option selected="selected" value="">Selecione uma opção</option>
             </select>
         </div>
@@ -40,7 +40,6 @@
         </tr>
     </thead>
     <tbody>
-        @*@foreach (var item in Model)*@
         @for (int i = 0; i < Model.Operations.Count; i++)
         {
             <tr>
@@ -51,10 +50,10 @@
                     @Model.Operations[i].Quantity
                 </td>
                 <td>
-                    @Model.Operations[i].InvestValue
+                    @string.Format("{0:N2}", Model.Operations[i].RentabilityValue)
                 </td>
                 <td>
-                    @Model.Operations[i].RentabilityPercentage
+                    @string.Format("{0:P2}", Model.Operations[i].RentabilityPercentage)
                 </td>
             </tr>
         }
