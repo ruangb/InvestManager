@@ -13,32 +13,33 @@
     </div>
 </div>
 
-<form asp-action="RentabilityPerMonth">
-    <div asp-validation-summary="None" class="text-danger"></div>
-    <div class="form-group">
+<form asp-action="RentabilityPerMonth" style="padding-bottom:70px">
+    <div asp-validation-summary="All" class="form-group-sm" text-danger">
         <div class="col-md-2">
             <label class="control-label">Selecione o mês</label>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <select asp-for="ReferenceMonth" class="form-control" asp-items="@(new SelectList(Model.Months, Model.ReferenceMonth))">
                 <option selected="selected" value="">Selecione uma opção</option>
             </select>
         </div>
         <span class="text-danger"></span>
         <div class="col-md-2">
+        </div>
+        <div class="col-md-2">
             <label class="control-label">Selecione o Ano</label>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             <select asp-for="ReferenceYear" class="form-control" asp-items="@(new SelectList(Model.Years, Model.ReferenceYear))">
                 <option selected="selected" value="">Selecione uma opção</option>
             </select>
         </div>
         <span class="text-danger"></span>
-        <input type="submit" value="Visualizar" />
+        <div class="col-md-2">
+            <input type="submit" class="btn btn-default btn-sm" value="Visualizar" />
+        </div>
     </div>
 </form>
-<br />
-<br />
 <table class="table table-striped table-hover" id="dataTable">
     <thead>
         <tr class="success">

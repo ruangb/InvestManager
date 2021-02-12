@@ -7,6 +7,7 @@ namespace InvestManager.Models
 {
     public static class Enums
     {
+        public const string defaultDescription = "Nenhum";
         public enum OperationType
         {
             [Description("Nenhum")]
@@ -53,6 +54,8 @@ namespace InvestManager.Models
                 .SelectMany(member => member.GetCustomAttributes(typeof(DescriptionAttribute), true).Cast<DescriptionAttribute>())
                 .ToList();
 
+            attributes.Remove(attributes.Find(x => x.Description == defaultDescription));
+
             return attributes.Select(x => x.Description);
         }
 
@@ -73,16 +76,12 @@ namespace InvestManager.Models
                 {
                     description = ((DescriptionAttribute)attrs[0]).Description;
                 }
-
-                //var value = fieldInfo.GetValue(enumValue);
-                //var number = fieldInfo.GetRawConstantValue();
             }
 
             return description;
         }
 
         public static int? GetIndexByDescription<T>(this T enumValue, string description) 
-            //where T : struct, IConvertible
         {
             if (!typeof(T).IsEnum)
                 return null;
