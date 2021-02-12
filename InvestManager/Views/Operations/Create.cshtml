@@ -1,7 +1,7 @@
 ﻿@model InvestManager.Models.Operation
 
 @{
-    ViewData["Title"] = "Nova Operaçao";
+    ViewData["Title"] = "Nova Operação";
 }
 
 <h2>@ViewData["Title"]</h2>
@@ -18,7 +18,7 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Asset" class="control-label"></label>
-                <input asp-for="Asset" class="form-control input-sm" />
+                <input asp-for="Asset" class="form-control" />
                 <span asp-validation-for="Asset" class="text-danger"></span>
             </div>
             <div class="form-group">

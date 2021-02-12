@@ -4,16 +4,7 @@
 }
 <br />
 
-<div class="col-md-12">
-    <div class="form-group">
-        <div class="col-md-8"></div>
-        <div class="col-md-4">
-            <h5>@ViewBag.RentabilityTotal</h5>
-        </div>
-    </div>
-</div>
-
-<form asp-action="RentabilityPerMonth" style="padding-bottom:70px">
+<form asp-action="RentabilityPerMonth" style="padding-top:20px; padding-bottom:60px;">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="form-group-sm">
         <div class="col-md-1">
@@ -38,6 +29,9 @@
         </div>
         <div class="col-md-2">
             <input type="submit" class="btn btn-default btn-sm" value="Visualizar" />
+        </div>
+        <div class="col-md-3">
+            <h5>@ViewBag.RentabilityTotal</h5>
         </div>
     </div>
 </form>
