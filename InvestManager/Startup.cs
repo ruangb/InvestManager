@@ -10,6 +10,7 @@ using InvestManager.Models;
 using InvestManager.Services;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.JSInterop;
 
 namespace InvestManager
 {
