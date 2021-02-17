@@ -116,22 +116,36 @@ namespace InvestManager.Services
                     int count = 0;
                     decimal purchaseTotalPrice = 0;
                     decimal soldTotalPrice = 0;
+                    decimal balanceTotalPrice = 0;
                     int purchaseQuantity = 0;
+                    int balanceQuantity = 0;
                     soldQuantity = 0;
 
                     IList<Operation> listByAsset = operations.Where(x => x.Asset == item.Key
                                                                 && ((x.Type == Enums.OperationType.Purchase.GetDescription()
                                                                 && x.Date <= endDate)
                                                                     || (x.Type == Enums.OperationType.Sale.GetDescription()
-                                                                    && x.Date >= startDate
-                                                                    && x.Date <= endDate))).OrderBy(x => x.Date).ToList();
+                                                                    && x.Date < startDate))).OrderBy(x => x.Date).ToList();
 
                     foreach (var op in listByAsset)
                     {
+                        if (item.Key == "BIDI4")
+                        {
+
+                        }
+
+                        if (item.Key == "CYRE3")
+                        {
+
+                        }
+
                         if (count == 0 && op.Type == Enums.OperationType.Purchase.GetDescription())
                         {
                             purchaseTotalPrice = op.Price * op.Quantity;
                             purchaseQuantity = op.Quantity;
+
+                            balanceTotalPrice = purchaseTotalPrice;
+                            balanceQuantity = purchaseQuantity;
 
                             count++;
                         }
@@ -139,22 +153,49 @@ namespace InvestManager.Services
                         {
                             soldTotalPrice += (op.Price * op.Quantity);
                             soldQuantity += op.Quantity;
+
+                            balanceTotalPrice -= (balanceTotalPrice / balanceQuantity) * op.Quantity;
+                            balanceQuantity -= op.Quantity;
+
+                            purchaseTotalPrice -= (purchaseTotalPrice / purchaseQuantity) * op.Quantity;
+                            purchaseQuantity -= op.Quantity;
                         }
                         else
                         {
                             purchaseTotalPrice += (op.Price * op.Quantity);
                             purchaseQuantity += op.Quantity;
+
+                            balanceTotalPrice += (op.Price * op.Quantity);
+                            balanceQuantity += op.Quantity;
                         }
                     }
 
-                    if (purchaseQuantity > soldQuantity)
+                    if (item.Key == "BIDI4")
+                    {
+
+                    }
+
+                    decimal deadlineSalesTotalPrice = operations.Where(x => x.Asset == item.Key 
+                                                            && x.Type == Enums.OperationType.Sale.GetDescription()
+                                                            && x.Date >= startDate
+                                                            && x.Date <= endDate).Sum(x => x.Price * x.Quantity);
+
+                    int deadlineSalesQuantity = operations.Where(x => x.Asset == item.Key
+                                        && x.Type == Enums.OperationType.Sale.GetDescription()
+                                        && x.Date >= startDate
+                                        && x.Date <= endDate).Sum(x => x.Quantity);
+
+
+                    if (purchaseQuantity > deadlineSalesQuantity)
                     {
                         int preDateSoldQuantity = 0;
                         int posDateSoldQuantity = 0;
-                        decimal inWalletValue = listWallet.Where(x => x.Asset == item.Key).Select(x => x.Price * x.Quantity).Sum();
                         int inWalletQuantity = listWallet.Where(x => x.Asset == item.Key).Select(x => x.Quantity).Sum();
+                        decimal inWalletValue = listWallet.Where(x => x.Asset == item.Key).Select(x => x.Price * x.Quantity).Sum();
+                        int preDatePurchaseTotalQuantity = 0;
+                        decimal preDatePurchaseTotalPrice = 0;
 
-                        if (inWalletQuantity != (purchaseQuantity - soldQuantity))
+                        if (inWalletQuantity != (purchaseQuantity - deadlineSalesQuantity))
                         {
                             preDateSoldQuantity = operations.Where(x => x.Asset == item.Key && x.Type == Enums.OperationType.Sale.GetDescription() && x.Date < startDate).Sum(x => x.Quantity);
                             posDateSoldQuantity = operations.Where(x => x.Asset == item.Key && x.Type == Enums.OperationType.Sale.GetDescription() && x.Date > endDate).Sum(x => x.Quantity);
@@ -164,16 +205,23 @@ namespace InvestManager.Services
                         decimal posDateSoldValue = (purchaseTotalPrice / purchaseQuantity) * posDateSoldQuantity;
 
                         purchaseTotalPrice -= inWalletValue;
-                        purchaseTotalPrice -= preDateSoldValue;
                         purchaseTotalPrice -= posDateSoldValue;
                     }
 
+                    //purchaseTotalPrice -= balanceTotalPrice;
+                    //deadlineSalesTotalPrice -= soldTotalPrice;
+
                     purchaseTotalPrice -= ((purchaseTotalPrice) * (parameters[0].TradingFee / 100));
-                    soldTotalPrice -= ((soldTotalPrice) * (parameters[0].LiquidityFee / 100));
+                    deadlineSalesTotalPrice -= ((deadlineSalesTotalPrice) * (parameters[0].LiquidityFee / 100));
 
-                    operationReturn.Quantity = soldQuantity;
+                    operationReturn.Quantity = deadlineSalesQuantity;
 
-                    operationReturn.RentabilityValue = soldTotalPrice - purchaseTotalPrice;
+                    if (purchaseTotalPrice == 0)
+                    {
+
+                    }
+
+                    operationReturn.RentabilityValue = deadlineSalesTotalPrice - purchaseTotalPrice;
                     operationReturn.RentabilityPercentage = operationReturn.RentabilityValue / purchaseTotalPrice;
 
                     rentabilityTotalValue += operationReturn.RentabilityValue;
@@ -191,6 +239,139 @@ namespace InvestManager.Services
 
             return listOperation;
         }
+
+        //public IList<Operation> GetRentabilityPerMonth(Operation operation, List<Operation> operations, List<Parameter> parameters)
+        //{
+        //    Operation operationReturn = new Operation();
+
+        //    IList<Operation> listWallet = WalletProcess(operations, parameters);
+        //    IList<Operation> listOperation = new List<Operation>();
+
+        //    string monthIndex = Enums.GetIndexByDescription(Enums.Month.None, operation.ReferenceMonth).ToString();
+
+        //    if (monthIndex.Length == 1)
+        //        monthIndex = "0" + monthIndex;
+
+        //    DateTime startDate = Convert.ToDateTime($"{"01/"}{monthIndex}{"/"}{operation.ReferenceYear}");
+        //    DateTime endDate = startDate.AddMonths(1).AddDays(-1).AddHours(23).AddMinutes(59).AddSeconds(59);
+
+        //    decimal rentabilityTotalValue = 0;
+        //    decimal rentabilityTotalPercentage = 0;
+        //    int registerSoldQuantity = 0;
+
+        //    var listGroup = operations.GroupBy(x => x.Asset);
+
+        //    foreach (var item in listGroup)
+        //    {
+        //        int soldQuantity = operations.Where(x => x.Asset == item.Key
+        //                                        && x.Type == Enums.OperationType.Sale.GetDescription()
+        //                                        && x.Date >= startDate
+        //                                        && x.Date <= endDate).Sum(x => x.Quantity);
+
+        //        if (soldQuantity > 0)
+        //        {
+        //            int count = 0;
+        //            decimal purchaseTotalPrice = 0;
+        //            decimal soldTotalPrice = 0;
+        //            int purchaseQuantity = 0;
+        //            soldQuantity = 0;
+
+        //            IList<Operation> listByAsset = operations.Where(x => x.Asset == item.Key
+        //                                                        && ((x.Type == Enums.OperationType.Purchase.GetDescription()
+        //                                                        && x.Date <= endDate)
+        //                                                            || (x.Type == Enums.OperationType.Sale.GetDescription()
+        //                                                            && x.Date >= startDate
+        //                                                            && x.Date <= endDate))).OrderBy(x => x.Date).ToList();
+
+        //            foreach (var op in listByAsset)
+        //            {
+        //                if (count == 0 && op.Type == Enums.OperationType.Purchase.GetDescription())
+        //                {
+        //                    purchaseTotalPrice = op.Price * op.Quantity;
+        //                    purchaseQuantity = op.Quantity;
+
+        //                    count++;
+        //                }
+        //                else if (op.Type == Enums.OperationType.Sale.GetDescription())
+        //                {
+        //                    soldTotalPrice += (op.Price * op.Quantity);
+        //                    soldQuantity += op.Quantity;
+        //                }
+        //                else
+        //                {
+        //                    purchaseTotalPrice += (op.Price * op.Quantity);
+        //                    purchaseQuantity += op.Quantity;
+        //                }
+        //            }
+
+        //            if (item.Key == "BIDI4")
+        //            {
+
+        //            }
+
+        //            if (item.Key == "CYRE3")
+        //            {
+
+        //            }
+
+        //            if (purchaseQuantity > soldQuantity)
+        //            {
+        //                int preDateSoldQuantity = 0;
+        //                int posDateSoldQuantity = 0;
+        //                int inWalletQuantity = listWallet.Where(x => x.Asset == item.Key).Select(x => x.Quantity).Sum();
+        //                decimal inWalletValue = listWallet.Where(x => x.Asset == item.Key).Select(x => x.Price * x.Quantity).Sum();
+        //                int preDatePurchaseTotalQuantity = 0;
+        //                decimal preDatePurchaseTotalPrice = 0;
+
+        //                if (inWalletQuantity != (purchaseQuantity - soldQuantity))
+        //                {
+        //                    preDateSoldQuantity = operations.Where(x => x.Asset == item.Key && x.Type == Enums.OperationType.Sale.GetDescription() && x.Date < startDate).Sum(x => x.Quantity);
+        //                    posDateSoldQuantity = operations.Where(x => x.Asset == item.Key && x.Type == Enums.OperationType.Sale.GetDescription() && x.Date > endDate).Sum(x => x.Quantity);
+
+        //                    //preDatePurchaseTotalPrice = operations.Where(x => x.Asset == item.Key && x.Type == Enums.OperationType.Purchase.GetDescription() && x.Date < startDate).Sum(x => x.Price * x.Quantity);
+        //                    //preDatePurchaseTotalQuantity = operations.Where(x => x.Asset == item.Key && x.Type == Enums.OperationType.Purchase.GetDescription() && x.Date < startDate).Sum(x => x.Quantity);
+
+        //                    //if (preDateSoldQuantity > 0)
+        //                    //    preDatePurchaseTotalPrice = preDatePurchaseTotalPrice / preDatePurchaseTotalQuantity;
+        //                }
+
+        //                decimal preDateSoldValue = (purchaseTotalPrice / purchaseQuantity) * preDateSoldQuantity;
+        //                decimal posDateSoldValue = (purchaseTotalPrice / purchaseQuantity) * posDateSoldQuantity;
+
+        //                purchaseTotalPrice -= preDatePurchaseTotalPrice * preDateSoldQuantity;
+        //                purchaseTotalPrice -= inWalletValue;
+        //                //purchaseTotalPrice -= preDateSoldValue;
+        //                purchaseTotalPrice -= posDateSoldValue;
+        //            }
+
+        //            purchaseTotalPrice -= ((purchaseTotalPrice) * (parameters[0].TradingFee / 100));
+        //            soldTotalPrice -= ((soldTotalPrice) * (parameters[0].LiquidityFee / 100));
+
+        //            operationReturn.Quantity = soldQuantity;
+
+        //            if (purchaseTotalPrice == 0)
+        //            {
+
+        //            }
+
+        //            operationReturn.RentabilityValue = soldTotalPrice - purchaseTotalPrice;
+        //            operationReturn.RentabilityPercentage = operationReturn.RentabilityValue / purchaseTotalPrice;
+
+        //            rentabilityTotalValue += operationReturn.RentabilityValue;
+        //            rentabilityTotalPercentage += operationReturn.RentabilityPercentage;
+
+        //            operationReturn.Asset = item.Key;
+
+        //            listOperation.Add(operationReturn);
+
+        //            operationReturn = new Operation();
+
+        //            registerSoldQuantity++;
+        //        }
+        //    }
+
+        //    return listOperation;
+        //}
 
         public IList<Operation> WalletProcess(List<Operation> operations, List<Parameter> parameters)
         {
