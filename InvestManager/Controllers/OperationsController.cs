@@ -195,6 +195,9 @@ namespace InvestManager.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Operation operation)
         {
+            ModelState["ReferenceMonth"].ValidationState = Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Valid;
+            ModelState["ReferenceYear"].ValidationState = Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Valid;
+
             if (!ModelState.IsValid)
                 return View(operation);
 

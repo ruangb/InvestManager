@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -69,6 +70,7 @@ namespace InvestManager.Models
         public IEnumerable<string> Months { get; set; }
 
         [NotMapped]
+        [ReadOnly(true)]
         [Required(ErrorMessage = "{0} obrigatório")]
         [Display(Name = "Mês")]
         public string ReferenceMonth { get; set; }
@@ -77,6 +79,7 @@ namespace InvestManager.Models
         public IEnumerable<string> Years { get; set; }
 
         [NotMapped]
+        [ReadOnly(true)]
         [Required(ErrorMessage = "{0} obrigatório")]
         [Display(Name = "Ano")]
         public string ReferenceYear { get; set; }
