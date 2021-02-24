@@ -83,6 +83,16 @@ namespace InvestManager.Services
             }
         }
 
+        public void  Keep(Operation obj)
+        {
+            if (_context.Operation.Any(x => x.Id == 0))
+            {
+                _context.Operation.Remove(_context.Operation.Where(x => x.Id == 0).First());
+            }
+
+            _context.Add(obj);
+        }
+
         public IList<Operation> GetRentabilityPerMonth(Operation operation, List<Operation> operations, List<Parameter> parameters)
         {
             Operation operationReturn = new Operation();
@@ -196,6 +206,8 @@ namespace InvestManager.Services
                     registerSoldQuantity++;
                 }
             }
+
+            listOperation = listOperation.OrderBy(x => x.Asset).ToList();
 
             return listOperation;
         }

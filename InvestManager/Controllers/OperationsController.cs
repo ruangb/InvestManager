@@ -7,8 +7,9 @@ using System.Diagnostics;
 using System.Data;
 using System.Linq;
 using System.Collections.Generic;
-using Microsoft.JSInterop;
 using System;
+using System.Threading;
+using InvestManager.Utilities;
 
 namespace InvestManager.Controllers
 {
@@ -134,8 +135,12 @@ namespace InvestManager.Controllers
 
             listOperation = listOperation.OrderBy(x => x.Asset).ToList();
 
+            Operations = listOperation;
+
             return View(listOperation);
         }
+
+        public IList<Operation> Operations { get; set; }
 
         [HttpPost]
         public async Task<IActionResult> RentabilityPerMonth(Operation operation)
@@ -153,8 +158,10 @@ namespace InvestManager.Controllers
             listOperation = listOperation.OrderBy(x => x.Asset).ToList();
 
             operationView.Months     = Enums.GetDescriptions<Enums.Month>();
-            operationView.Years      = Utilities.GetPastYears();
+            operationView.Years      = ToolKit.GetPastYears();
             operationView.Operations = listOperation;
+
+            StaticClass.sOperation = operation;
 
             return View(operationView);
         }
@@ -164,7 +171,9 @@ namespace InvestManager.Controllers
             var operations = await _operationService.FindAllAsync();
             var parameters = await _parameterService.FindAllAsync();
 
-            List<Operation> listOperation = (List<Operation>)_operationService.GetRentabilityPerMonth(new Operation() { ReferenceYear = "2020", ReferenceMonth = "Julho"  }, operations, parameters);
+            List<Operation> listOperation = new List<Operation>();
+
+            listOperation = (List<Operation>)_operationService.GetRentabilityPerMonth(StaticClass.sOperation, operations, parameters);
 
             foreach (var item in listOperation)
             {
@@ -181,7 +190,7 @@ namespace InvestManager.Controllers
 
             operation.Operations = new List<Operation>();
             operation.Months     = Enums.GetDescriptions<Enums.Month>();
-            operation.Years      = Utilities.GetPastYears();
+            operation.Years      = ToolKit.GetPastYears();
 
             return View(operation);
         }

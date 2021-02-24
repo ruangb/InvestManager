@@ -8,6 +8,7 @@ namespace InvestManager.Models
     public static class Enums
     {
         public const string defaultDescription = "Nenhum";
+
         public enum OperationType
         {
             [Description("Nenhum")]

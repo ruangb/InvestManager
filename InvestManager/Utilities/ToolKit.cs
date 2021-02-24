@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace InvestManager
 {
-    public static class Utilities
+    public static class ToolKit
     {
         public static IList<string> GetPastYears()
         {
