@@ -173,12 +173,17 @@ namespace InvestManager.Controllers
 
             List<Operation> listOperation = new List<Operation>();
 
-            listOperation = (List<Operation>)_operationService.GetRentabilityPerMonth(StaticClass.sOperation, operations, parameters);
+            Operation operation = StaticClass.sOperation;
 
-            foreach (var item in listOperation)
+            if (operation != null)
             {
-                item.RentabilityValue = Math.Round(item.RentabilityValue, 2);
-                item.RentabilityPercentage = Math.Round(item.RentabilityPercentage * 100, 2);
+                listOperation = (List<Operation>)_operationService.GetRentabilityPerMonth(StaticClass.sOperation, operations, parameters);
+
+                foreach (var item in listOperation)
+                {
+                    item.RentabilityValue = Math.Round(item.RentabilityValue, 2);
+                    item.RentabilityPercentage = Math.Round(item.RentabilityPercentage * 100, 2);
+                }
             }
 
             return Json(listOperation);
