@@ -4,6 +4,10 @@
 }
 <br />
 
+<hr />
+<div id="chart_div" style="width: auto; height: auto;"></div>
+<hr />
+
 <table class="table table-striped table-hover" id="dataTable">
     <thead>
         <tr class="success">
@@ -34,4 +38,51 @@
         }
     </tbody>
 </table>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script type="text/javascript">
+    google.charts.load('current', {packages: ['corechart', 'bar']});
+    google.charts.setOnLoadCallback(LoadChart);
+    function LoadChart() {
+        $.ajax({
+            url: '@Url.Action("BuildChartAsync","Operations")',
+            dataType: "json",
+            type: "GET",
+            error: function(xhr, status, error) {
+                var err = eval("(" + xhr.responseText + ")");
+                toastr.error(err.message);
+            },
+            success: function(data) {
+                RentabilityPerMonthChart(data);
+                return false;
+            }
+        });
+        return false;
+    }
+    function RentabilityPerMonthChart(data) {
+        var dataArray = [
+            ['Ativo', 'Rentabilidade (R$)', { role: 'annotation' }]
+        ];
+        $.each(data, function (i, item) {
+            dataArray.push([item.asset, parseFloat(item.rentabilityValue), parseFloat(item.rentabilityValue)]);
+        });
+
+        if (dataArray.length == 0)
+            return false;
+
+        var data = google.visualization.arrayToDataTable(dataArray);
+        var options = {
+            legend: 'none',
+            chartArea: {
+                width: '90%'
+            },
+        };
+        var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+        return false;
+    }
+    </script>
+}
 
