@@ -4,7 +4,7 @@
 }
 <br />
 
-<form asp-action="RentabilityPerYear" style="padding-top:20px; padding-bottom:60px;">
+<form asp-action="RentabilityPerYear" style="padding-top:20px; padding-bottom:30px;">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="form-group-sm">
         <div class="col-md-1">
@@ -19,11 +19,18 @@
         <div class="col-md-2">
             <input type="submit" class="btn btn-default btn-sm" value="Visualizar">
         </div>
+        <div class="col-md-4">
+        </div>
         <div class="col-md-3">
             <h5>@ViewBag.RentabilityTotal</h5>
         </div>
     </div>
 </form>
+
+<hr />
+<div id="chart_div" style="width: auto; height: auto;"></div>
+<hr />
+
 <table class="table table-striped table-hover" id="dataTable">
     <thead>
         <tr class="success">
@@ -54,14 +61,10 @@
     </tbody>
 </table>
 
-<div id="chart_div" style="width: auto; height: auto;"></div>
-
-
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
     <script type="text/javascript">
-
     google.charts.load('current', {packages: ['corechart', 'bar']});
     google.charts.setOnLoadCallback(LoadChart);
     function LoadChart() {
@@ -93,13 +96,10 @@
 
         var data = google.visualization.arrayToDataTable(dataArray);
         var options = {
+            legend: 'none',
             chartArea: {
-                width: '50%'
+                width: '90%'
             },
-            //colors: ['#b0120a', '#ffab91'],
-            vAxis: {
-                title: 'Rentabilidade em Reais'
-            }
         };
         var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
         chart.draw(data, options);
