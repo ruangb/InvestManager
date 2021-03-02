@@ -93,17 +93,28 @@ namespace InvestManager.Services
             _context.Add(obj);
         }
 
-        public IList<Operation> GetRentabilityPerMonth(Operation operation, List<Operation> operations, List<Parameter> parameters)
+        public IList<Operation> GetRentabilityPerPeriod(Operation operation, List<Operation> operations, List<Parameter> parameters)
         {
             Operation operationReturn = new Operation();
 
-            string monthIndex = Enums.GetIndexByDescription(Enums.Month.None, operation.ReferenceMonth).ToString();
+            DateTime startDate;
+            DateTime endDate;
 
-            if (monthIndex.Length == 1)
-                monthIndex = "0" + monthIndex;
+            if (operation.ReferenceMonth != null)
+            {
+                string monthIndex = Enums.GetIndexByDescription(Enums.Month.None, operation.ReferenceMonth).ToString();
 
-            DateTime startDate = Convert.ToDateTime($"{"01/"}{monthIndex}{"/"}{operation.ReferenceYear}");
-            DateTime endDate = startDate.AddMonths(1).AddDays(-1).AddHours(23).AddMinutes(59).AddSeconds(59);
+                if (monthIndex.Length == 1)
+                    monthIndex = "0" + monthIndex;
+
+                startDate = Convert.ToDateTime($"{"01/"}{monthIndex}{"/"}{operation.ReferenceYear}");
+                endDate = startDate.AddMonths(1).AddDays(-1).AddHours(23).AddMinutes(59).AddSeconds(59);
+            }
+            else
+            {
+                startDate = Convert.ToDateTime($"{"01/01/"}{operation.ReferenceYear}");
+                endDate = startDate.AddYears(1).AddDays(-1).AddHours(23).AddMinutes(59).AddSeconds(59);
+            }
 
             operations = operations.Where(x => x.Date <= endDate).ToList();
 

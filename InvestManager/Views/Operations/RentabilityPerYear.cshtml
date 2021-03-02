@@ -1,0 +1,110 @@
+﻿@model InvestManager.Models.Operation
+@{
+    ViewData["Title"] = "Rentabilidade por Ano";
+}
+<br />
+
+<form asp-action="RentabilityPerYear" style="padding-top:20px; padding-bottom:60px;">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="form-group-sm">
+        <div class="col-md-1">
+            <label asp-for="ReferenceYear" class="control-label"></label>
+        </div>
+        <div class="col-md-2">
+            <select asp-for="ReferenceYear" class="form-control" asp-items="@(new SelectList(Model.Years, Model.ReferenceYear))">
+                <option selected="selected" value="">Selecione uma opção</option>
+            </select>
+            <span asp-validation-for="ReferenceYear" class="text-danger"></span>
+        </div>
+        <div class="col-md-2">
+            <input type="submit" class="btn btn-default btn-sm" value="Visualizar">
+        </div>
+        <div class="col-md-3">
+            <h5>@ViewBag.RentabilityTotal</h5>
+        </div>
+    </div>
+</form>
+<table class="table table-striped table-hover" id="dataTable">
+    <thead>
+        <tr class="success">
+            <th>@Html.DisplayNameFor(model => model.Asset)</th>
+            <th>@Html.DisplayNameFor(model => model.Quantity)</th>
+            <th>@Html.DisplayNameFor(model => model.RentabilityValue)</th>
+            <th>@Html.DisplayNameFor(model => model.RentabilityPercentage)</th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (int i = 0; i < Model.Operations.Count; i++)
+        {
+            <tr>
+                <td>
+                    @Model.Operations[i].Asset
+                </td>
+                <td>
+                    @Model.Operations[i].Quantity
+                </td>
+                <td>
+                    @string.Format("{0:N2}", Model.Operations[i].RentabilityValue)
+                </td>
+                <td>
+                    @string.Format("{0:P2}", Model.Operations[i].RentabilityPercentage)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div id="chart_div" style="width: auto; height: auto;"></div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script type="text/javascript">
+
+    google.charts.load('current', {packages: ['corechart', 'bar']});
+    google.charts.setOnLoadCallback(LoadChart);
+    function LoadChart() {
+        $.ajax({
+            url: '@Url.Action("BuildChartAsync","Operations")',
+            dataType: "json",
+            type: "GET",
+            error: function(xhr, status, error) {
+                var err = eval("(" + xhr.responseText + ")");
+                toastr.error(err.message);
+            },
+            success: function(data) {
+                RentabilityPerMonthChart(data);
+                return false;
+            }
+        });
+        return false;
+    }
+    function RentabilityPerMonthChart(data) {
+        var dataArray = [
+            ['Ativo', 'Rentabilidade (R$)', { role: 'annotation' }]
+        ];
+        $.each(data, function (i, item) {
+            dataArray.push([item.asset, parseFloat(item.rentabilityValue), parseFloat(item.rentabilityValue)]);
+        });
+
+        if (dataArray.length == 0)
+            return false;
+
+        var data = google.visualization.arrayToDataTable(dataArray);
+        var options = {
+            chartArea: {
+                width: '50%'
+            },
+            //colors: ['#b0120a', '#ffab91'],
+            vAxis: {
+                title: 'Rentabilidade em Reais'
+            }
+        };
+        var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+        return false;
+    }
+    </script>
+}
+

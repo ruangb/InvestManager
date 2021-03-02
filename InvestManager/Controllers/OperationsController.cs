@@ -135,12 +135,8 @@ namespace InvestManager.Controllers
 
             listOperation = listOperation.OrderBy(x => x.Asset).ToList();
 
-            Operations = listOperation;
-
             return View(listOperation);
         }
-
-        public IList<Operation> Operations { get; set; }
 
         [HttpPost]
         public async Task<IActionResult> RentabilityPerMonth(Operation operation)
@@ -150,7 +146,7 @@ namespace InvestManager.Controllers
 
             Operation operationView = new Operation();
 
-            IList<Operation> listOperation = _operationService.GetRentabilityPerMonth(operation, operations, parameters);
+            IList<Operation> listOperation = _operationService.GetRentabilityPerPeriod(operation, operations, parameters);
 
             if (listOperation.Count() > 0)
                 ViewBag.RentabilityTotal = string.Format("Rentabilidade Total R$ {0:N2} / {1:P2}", listOperation.Sum(x => x.RentabilityValue), listOperation.Sum(x => x.RentabilityPercentage) / listOperation.Count());
@@ -166,6 +162,50 @@ namespace InvestManager.Controllers
             return View(operationView);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> RentabilityPerYear(Operation operation)
+        {
+            var operations = await _operationService.FindAllAsync();
+            var parameters = await _parameterService.FindAllAsync();
+
+            Operation operationView = new Operation();
+
+            IList<Operation> listOperation = _operationService.GetRentabilityPerPeriod(operation, operations, parameters);
+
+            if (listOperation.Count() > 0)
+                ViewBag.RentabilityTotal = string.Format("Rentabilidade Total R$ {0:N2} / {1:P2}", listOperation.Sum(x => x.RentabilityValue), listOperation.Sum(x => x.RentabilityPercentage) / listOperation.Count());
+
+            listOperation = listOperation.OrderBy(x => x.Asset).ToList();
+
+            operationView.Years = ToolKit.GetPastYears();
+            operationView.Operations = listOperation;
+
+            StaticClass.sOperation = operation;
+
+            return View(operationView);
+        }
+
+        public async Task<IActionResult> RentabilityPerMonth()
+        {
+            Operation operation = new Operation();
+
+            operation.Operations = new List<Operation>();
+            operation.Months = Enums.GetDescriptions<Enums.Month>();
+            operation.Years = ToolKit.GetPastYears();
+
+            return View(operation);
+        }
+
+        public async Task<IActionResult> RentabilityPerYear()
+        {
+            Operation operation = new Operation();
+
+            operation.Operations = new List<Operation>();
+            operation.Years = ToolKit.GetPastYears();
+
+            return View(operation);
+        }
+
         public async Task<JsonResult> BuildChartAsync()
         {
             var operations = await _operationService.FindAllAsync();
@@ -177,7 +217,7 @@ namespace InvestManager.Controllers
 
             if (operation != null)
             {
-                listOperation = (List<Operation>)_operationService.GetRentabilityPerMonth(StaticClass.sOperation, operations, parameters);
+                listOperation = (List<Operation>)_operationService.GetRentabilityPerPeriod(StaticClass.sOperation, operations, parameters);
 
                 foreach (var item in listOperation)
                 {
@@ -186,18 +226,9 @@ namespace InvestManager.Controllers
                 }
             }
 
+            StaticClass.sOperation = null;
+
             return Json(listOperation);
-        }
-
-        public async Task<IActionResult> RentabilityPerMonth()
-        {
-            Operation operation = new Operation();
-
-            operation.Operations = new List<Operation>();
-            operation.Months     = Enums.GetDescriptions<Enums.Month>();
-            operation.Years      = ToolKit.GetPastYears();
-
-            return View(operation);
         }
 
         public async Task<IActionResult> Create()
