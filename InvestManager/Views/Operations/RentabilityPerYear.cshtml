@@ -69,7 +69,7 @@
     google.charts.setOnLoadCallback(LoadChart);
     function LoadChart() {
         $.ajax({
-            url: '@Url.Action("BuildChartAsync","Operations")',
+            url: '@Url.Action("BuildRentabilityPerPeriodChartAsync", "Operations")',
             dataType: "json",
             type: "GET",
             error: function(xhr, status, error) {

@@ -47,7 +47,7 @@
     google.charts.setOnLoadCallback(LoadChart);
     function LoadChart() {
         $.ajax({
-            url: '@Url.Action("BuildChartAsync","Operations")',
+            url: '@Url.Action("BuildWalletChartAsync", "Operations")',
             dataType: "json",
             type: "GET",
             error: function(xhr, status, error) {
@@ -63,10 +63,10 @@
     }
     function RentabilityPerMonthChart(data) {
         var dataArray = [
-            ['Ativo', 'Rentabilidade (R$)', { role: 'annotation' }]
+            ['Ativo', 'Valor Investido', { role: 'annotation' }]
         ];
         $.each(data, function (i, item) {
-            dataArray.push([item.asset, parseFloat(item.rentabilityValue), parseFloat(item.rentabilityValue)]);
+            dataArray.push([item.asset, parseFloat(item.investValue), parseFloat(item.quantity)]);
         });
 
         if (dataArray.length == 0)

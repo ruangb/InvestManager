@@ -206,7 +206,7 @@ namespace InvestManager.Controllers
             return View(operation);
         }
 
-        public async Task<JsonResult> BuildChartAsync()
+        public async Task<JsonResult> BuildRentabilityPerPeriodChartAsync()
         {
             var operations = await _operationService.FindAllAsync();
             var parameters = await _parameterService.FindAllAsync();
@@ -229,6 +229,14 @@ namespace InvestManager.Controllers
             StaticClass.sOperation = null;
 
             return Json(listOperation);
+        }
+
+        public async Task<JsonResult> BuildWalletChartAsync()
+        {
+            var operations = await _operationService.FindAllAsync();
+            var parameters = await _parameterService.FindAllAsync();
+
+            return Json(_operationService.WalletProcess(operations, parameters));
         }
 
         public async Task<IActionResult> Create()
