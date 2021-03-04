@@ -11,7 +11,7 @@
             <label asp-for="ReferenceYear" class="control-label"></label>
         </div>
         <div class="col-md-2">
-            <select asp-for="ReferenceYear" class="form-control" asp-items="@(new SelectList(Model.Years, Model.ReferenceYear))">
+            <select id="selReferenceYear" asp-for="ReferenceYear" class="form-control" asp-items="@(new SelectList(Model.Years, Model.ReferenceYear))">
                 <option selected="selected" value="">Selecione uma opção</option>
             </select>
             <span asp-validation-for="ReferenceYear" class="text-danger"></span>
@@ -95,7 +95,9 @@
             return false;
 
         var data = google.visualization.arrayToDataTable(dataArray);
+        var selReferenceYear = document.getElementById("selReferenceYear");
         var options = {
+            title: 'Rentabilidade por ação no ano de ' + selReferenceYear.options[selReferenceYear.selectedIndex].text,
             legend: 'none',
             chartArea: {
                 width: '90%'

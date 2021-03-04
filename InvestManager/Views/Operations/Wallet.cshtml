@@ -42,7 +42,7 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
-    <script type="text/javascript">
+<script type="text/javascript">
     google.charts.load('current', {packages: ['corechart', 'bar']});
     google.charts.setOnLoadCallback(LoadChart);
     function LoadChart() {
@@ -74,15 +74,17 @@
 
         var data = google.visualization.arrayToDataTable(dataArray);
         var options = {
-            legend: 'none',
+            title: 'Posição baseada no valor investido',
+            is3D: true,
             chartArea: {
-                width: '90%'
-            },
+                width: '100%',
+                height: '82%'
+            }
         };
         var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
         chart.draw(data, options);
         return false;
     }
-    </script>
+</script>
 }
 

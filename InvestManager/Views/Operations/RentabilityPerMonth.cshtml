@@ -11,7 +11,7 @@
             <label asp-for="ReferenceMonth" class="control-label"></label>
         </div>
         <div class="col-md-2">
-            <select asp-for="ReferenceMonth" class="form-control" asp-items="@(new SelectList(Model.Months, Model.ReferenceMonth))">
+            <select id="selReferenceMonth" asp-for="ReferenceMonth" class="form-control" asp-items="@(new SelectList(Model.Months, Model.ReferenceMonth))">
                 <option selected="selected" value="">Selecione uma opção</option>
             </select>
             <span asp-validation-for="ReferenceMonth" class="text-danger"></span>
@@ -104,7 +104,10 @@
             return false;
 
         var data = google.visualization.arrayToDataTable(dataArray);
+        var selReferenceMonth = document.getElementById("selReferenceMonth");
         var options = {
+            title: 'Rentabilidade por ação no mês de ' + selReferenceMonth.options[selReferenceMonth.selectedIndex].text,
+            is3D: true,
             legend: 'none',
             chartArea: {
                 width: '90%'
