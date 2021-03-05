@@ -1,5 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Hosting;
+﻿using InvestManager.Models;
+using InvestManager.Services;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Threading.Tasks;
@@ -7,9 +8,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using ClosedXML.Excel;
-using InvestManager.Models;
-using InvestManager.Services;
-using System.Transactions;
 
 namespace InvestManager.Controllers
 {
