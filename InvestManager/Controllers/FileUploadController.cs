@@ -2,12 +2,12 @@
 using InvestManager.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
+using ClosedXML.Excel;
 using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using ClosedXML.Excel;
 
 namespace InvestManager.Controllers
 {
@@ -45,8 +45,6 @@ namespace InvestManager.Controllers
                                 dt.Columns.Add(cell.Value.ToString());
 
                             isFirstRow = false;
-
-                            IXLCells teste = row.Cells();
                         }
                         else
                         {
@@ -55,7 +53,10 @@ namespace InvestManager.Controllers
                             int i = 0;
 
                             foreach (IXLCell cell in row.Cells())
-                                dt.Rows[dt.Rows.Count - 1][i++] = cell.Value.ToString();
+                            {
+                                if (i < 9)
+                                    dt.Rows[dt.Rows.Count - 1][i++] = cell.Value.ToString();
+                            }
                         }
                     }
                     IList<DataRow> dss = dt.Rows.Cast<DataRow>().ToList();
