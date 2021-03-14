@@ -1,15 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using InvestManager.Services;
+﻿using InvestManager.Services;
 using InvestManager.Models;
 using InvestManager.Models.ViewModels;
+using InvestManager.Utilities;
+using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Data;
 using System.Linq;
 using System.Collections.Generic;
 using System;
-using System.Threading;
-using InvestManager.Utilities;
 
 namespace InvestManager.Controllers
 {

@@ -59,11 +59,12 @@ namespace InvestManager.Controllers
                             }
                         }
                     }
-                    IList<DataRow> dss = dt.Rows.Cast<DataRow>().ToList();
+
+                    IList<DataRow> dr = dt.Rows.Cast<DataRow>().ToList();
 
                     IList<Operation> listOperation = new List<Operation>();
 
-                    foreach (var item in dss)
+                    foreach (var item in dr)
                     {
                         Operation operation = new Operation();
 
