@@ -9,23 +9,24 @@ using System.Data;
 using System.Linq;
 using System.Collections.Generic;
 using System;
+using InvestManager.Manager.Repositories;
 
 namespace InvestManager.Controllers
 {
     public class OperationsController : Controller
     {
-        private readonly OperationService _operationService;
+        private readonly IOperationRepository _operationRepository;
         private readonly ParameterService _parameterService;
 
-        public OperationsController(OperationService operationService, ParameterService parameterService)
+        public OperationsController(IOperationRepository operationRepository, ParameterService parameterService)
         {
-            _operationService = operationService;
-            _parameterService = parameterService;
+            _operationRepository = operationRepository;
+            _parameterService    = parameterService;
         }
 
         public async Task<IActionResult> Index()
         {
-            var listOperation = await _operationService.FindAllAsync();
+            var listOperation = await _operationRepository.FindAllAsync();
             var listParameter = await _parameterService.FindAllAsync();
 
             if (listParameter.Any())
@@ -35,33 +36,24 @@ namespace InvestManager.Controllers
                     item.InvestValue = item.Quantity * item.Price - ((item.Quantity * item.Price) * (listParameter[0].TradingFee / 100));
                 }
             }
-            else
-            {
-                foreach (var item in listOperation)
-                {
-                    item.InvestValue = item.Quantity * item.Price;
-                }
-            }
-
-            listOperation = listOperation.OrderBy(x => x.Date).ThenBy(x => x.Asset).ThenByDescending(x => x.Price).ToList();
 
             return View(listOperation);
         }
 
         public async Task<IActionResult> Wallet()
         {
-            var operations = await _operationService.FindAllAsync();
+            var operations = await _operationRepository.FindAllAsync();
             var parameters = await _parameterService.FindAllAsync();
 
-            return View(_operationService.WalletProcess(operations)); 
+            return View(_operationRepository.WalletProcess(operations)); 
         }
 
         public async Task<IActionResult> Liquidation()
         {
-            var operations = await _operationService.FindAllAsync();
+            var operations = await _operationRepository.FindAllAsync();
             var parameters = await _parameterService.FindAllAsync();
 
-            IList<Operation> listWallet = _operationService.WalletProcess(operations);
+            IList<Operation> listWallet = _operationRepository.WalletProcess(operations);
 
             IList<Operation> listOperation = new List<Operation>();
 
@@ -143,12 +135,12 @@ namespace InvestManager.Controllers
         [HttpPost]
         public async Task<IActionResult> RentabilityPerMonth(Operation operation)
         {
-            var operations = await _operationService.FindAllAsync();
+            var operations = await _operationRepository.FindAllAsync();
             var parameters = await _parameterService.FindAllAsync();
 
             Operation operationView = new Operation();
 
-            IList<Operation> listOperation = _operationService.GetRentabilityPerPeriod(operation, operations, parameters);
+            IList<Operation> listOperation = _operationRepository.GetRentabilityPerPeriod(operation, operations, parameters);
 
             if (listOperation.Count() > 0)
                 ViewBag.RentabilityTotal = string.Format("Rentabilidade Total R$ {0:N2} / {1:P2}", listOperation.Sum(x => x.RentabilityValue), listOperation.Sum(x => x.RentabilityPercentage) / listOperation.Count());
@@ -167,12 +159,12 @@ namespace InvestManager.Controllers
         [HttpPost]
         public async Task<IActionResult> RentabilityPerYear(Operation operation)
         {
-            var operations = await _operationService.FindAllAsync();
+            var operations = await _operationRepository.FindAllAsync();
             var parameters = await _parameterService.FindAllAsync();
 
             Operation operationView = new Operation();
 
-            IList<Operation> listOperation = _operationService.GetRentabilityPerPeriod(operation, operations, parameters);
+            IList<Operation> listOperation = _operationRepository.GetRentabilityPerPeriod(operation, operations, parameters);
 
             if (listOperation.Count() > 0)
                 ViewBag.RentabilityTotal = string.Format("Rentabilidade Total R$ {0:N2} / {1:P2}", listOperation.Sum(x => x.RentabilityValue), listOperation.Sum(x => x.RentabilityPercentage) / listOperation.Count());
@@ -210,7 +202,7 @@ namespace InvestManager.Controllers
 
         public async Task<JsonResult> BuildRentabilityPerPeriodChartAsync()
         {
-            var operations = await _operationService.FindAllAsync();
+            var operations = await _operationRepository.FindAllAsync();
             var parameters = await _parameterService.FindAllAsync();
 
             List<Operation> listOperation = new List<Operation>();
@@ -219,7 +211,7 @@ namespace InvestManager.Controllers
 
             if (operation != null)
             {
-                listOperation = (List<Operation>)_operationService.GetRentabilityPerPeriod(StaticClass.sOperation, operations, parameters);
+                listOperation = (List<Operation>)_operationRepository.GetRentabilityPerPeriod(StaticClass.sOperation, operations, parameters);
 
                 foreach (var item in listOperation)
                 {
@@ -235,10 +227,10 @@ namespace InvestManager.Controllers
 
         public async Task<JsonResult> BuildWalletChartAsync()
         {
-            var operations = await _operationService.FindAllAsync();
+            var operations = await _operationRepository.FindAllAsync();
             var parameters = await _parameterService.FindAllAsync();
 
-            return Json(_operationService.WalletProcess(operations));
+            return Json(_operationRepository.WalletProcess(operations));
         }
 
         public async Task<IActionResult> Create()
@@ -255,7 +247,7 @@ namespace InvestManager.Controllers
             if (!ModelState.IsValid)
                 return View(operation);
 
-            await _operationService.InsertAsync(operation);
+            await _operationRepository.InsertAsync(operation);
 
             TempData["$AlertMessage$"] = "registro salvo com sucesso";
 
@@ -266,7 +258,7 @@ namespace InvestManager.Controllers
         {
             if (id != null)
             {
-                var obj = await _operationService.FindByIdAsync(id.Value);
+                var obj = await _operationRepository.FindByIdAsync(id.Value);
 
                 if (obj != null)
                     return View(obj);
@@ -281,7 +273,7 @@ namespace InvestManager.Controllers
         {
             try
             {
-                await _operationService.RemoveAsync(id);
+                await _operationRepository.RemoveAsync(id);
                 return RedirectToAction(nameof(Index));
             }
             catch (IntegrityException e)
@@ -294,7 +286,7 @@ namespace InvestManager.Controllers
         {
             if (id != null)
             {
-                var obj = await _operationService.FindByIdAsync(id.Value);
+                var obj = await _operationRepository.FindByIdAsync(id.Value);
 
                 if (obj != null)
                     return View(obj);
@@ -308,7 +300,7 @@ namespace InvestManager.Controllers
             if (id == null)
                 return RedirectToAction(nameof(Error), new { message = "Id not found" });
 
-            var obj = await _operationService.FindByIdAsync(id.Value);
+            var obj = await _operationRepository.FindByIdAsync(id.Value);
 
             if (obj == null)
                 return RedirectToAction(nameof(Error), new { message = "Id not found" });
@@ -334,7 +326,7 @@ namespace InvestManager.Controllers
 
             try
             {
-                await _operationService.UpdateAsync(operation);
+                await _operationRepository.UpdateAsync(operation);
                 return RedirectToAction(nameof(Index));
             }
             catch (NotFoundException e)

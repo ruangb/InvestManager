@@ -1,4 +1,5 @@
-﻿using InvestManager.Models;
+﻿using InvestManager.Manager.Repositories;
+using InvestManager.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Data;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace InvestManager.Services
 {
-    public class ParameterService
+    public class ParameterService : IParameterRepository
     {
         private readonly InvestManagerContext _context;
 

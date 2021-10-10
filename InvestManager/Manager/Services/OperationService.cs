@@ -1,4 +1,5 @@
-﻿using InvestManager.Models;
+﻿using InvestManager.Manager.Repositories;
+using InvestManager.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace InvestManager.Services
 {
-    public class OperationService
+    public class OperationService : IOperationRepository
     {
         private readonly InvestManagerContext _context;
 
@@ -20,7 +21,16 @@ namespace InvestManager.Services
 
         public async Task<List<Operation>> FindAllAsync()
         {
-            return await _context.Operation.ToListAsync();
+            var listOperation =  await _context.Operation.ToListAsync();
+
+            foreach (var item in listOperation)
+            {
+                item.InvestValue = item.Quantity * item.Price;
+            }
+
+            listOperation = listOperation.OrderBy(x => x.Date).ThenBy(x => x.Asset).ThenByDescending(x => x.Price).ToList();
+
+            return listOperation;
         }
 
         public async Task<int> InsertAsync(Operation obj)
