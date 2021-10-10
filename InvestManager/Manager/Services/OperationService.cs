@@ -93,7 +93,7 @@ namespace InvestManager.Services
             }
         }
 
-        public void  Keep(Operation obj)
+        public void Keep(Operation obj)
         {
             if (_context.Operation.Any(x => x.Id == 0))
             {
@@ -294,6 +294,78 @@ namespace InvestManager.Services
             }
 
             return listOperation.OrderByDescending(x => x.InvestValue).ThenBy(x => x.Asset).ToList();
+        }
+
+        public async Task<IList<Operation>> GetLiquidation(IList<Operation> listOperation, IList<Operation> listWallet, IList<Parameter> listParameter)
+        {
+            IList<Operation> operations = new List<Operation>();
+
+            decimal rentabilityTotalValue = 0;
+            decimal rentabilityTotalPercentage = 0;
+            int registerSoldQuantity = 0;
+
+            var listGroup = listOperation.Where(x => x.Type == Enums.OperationType.Purchase.GetDescription()).GroupBy(x => x.Asset);
+
+            foreach (var item in listGroup)
+            {
+                Operation operation = new Operation();
+
+                int soldQuantity = listOperation.Where(x => x.Asset == item.Key && x.Type == Enums.OperationType.Sale.GetDescription()).Sum(x => x.Quantity);
+
+                if (soldQuantity > 0)
+                {
+                    int count = 0;
+                    decimal purchaseTotalPrice = 0;
+                    decimal soldTotalPrice = 0;
+                    int purchaseQuantity = 0;
+                    soldQuantity = 0;
+
+                    IList<Operation> listByAsset = listOperation.Where(x => x.Asset == item.Key).OrderBy(x => x.Date).ToList();
+
+                    foreach (var op in listByAsset)
+                    {
+                        if (count == 0 && op.Type == Enums.OperationType.Purchase.GetDescription())
+                        {
+                            purchaseTotalPrice = op.Price * op.Quantity;
+                            purchaseQuantity = op.Quantity;
+
+                            count++;
+                        }
+                        else if (op.Type == Enums.OperationType.Sale.GetDescription())
+                        {
+                            soldTotalPrice += (op.Price * op.Quantity);
+                            soldQuantity += op.Quantity;
+                        }
+                        else
+                        {
+                            purchaseTotalPrice += (op.Price * op.Quantity);
+                            purchaseQuantity += op.Quantity;
+                        }
+                    }
+
+                    if (purchaseQuantity > soldQuantity)
+                        purchaseTotalPrice -= listWallet.Where(x => x.Asset == item.Key).Select(x => x.Price * x.Quantity).Sum();
+
+                    purchaseTotalPrice -= ((purchaseTotalPrice) * (listParameter[0].TradingFee / 100));
+                    soldTotalPrice -= ((soldTotalPrice) * (listParameter[0].LiquidityFee / 100));
+
+                    operation.Quantity = soldQuantity;
+
+                    operation.RentabilityValue = soldTotalPrice - purchaseTotalPrice;
+                    operation.RentabilityPercentage = operation.RentabilityValue / purchaseTotalPrice;
+
+                    rentabilityTotalValue += operation.RentabilityValue;
+                    rentabilityTotalPercentage += operation.RentabilityPercentage;
+
+                    operation.Asset = item.Key;
+
+                    operations.Add(operation);
+
+                    registerSoldQuantity++;
+                }
+            }
+
+            return operations;
         }
     }
 

@@ -2,6 +2,7 @@
 using InvestManager.Services;
 using InvestManager.Models;
 using InvestManager.Models.ViewModels;
+using InvestManager.Manager.Repositories;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Data;
@@ -10,9 +11,9 @@ namespace InvestManager.Controllers
 {
     public class ParametersController : Controller
     {
-        private readonly ParameterService _parameterService;
+        private readonly IParameterRepository _parameterService;
 
-        public ParametersController(ParameterService parameterService)
+        public ParametersController(IParameterRepository parameterService)
         {
             _parameterService = parameterService;
         }

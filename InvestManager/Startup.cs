@@ -6,11 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
-using InvestManager.Models;
-using InvestManager.Services;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore.Diagnostics;
-using Microsoft.JSInterop;
+using InvestManager.Models;
+using InvestManager.Services;
+using InvestManager.Manager.Repositories;
 
 namespace InvestManager
 {
@@ -37,16 +37,16 @@ namespace InvestManager
 
             services.AddDbContext<InvestManagerContext>(options =>
             {
-                //options.UseMySql(Configuration.GetConnectionString("InvestManagerContext"), builder =>
-                //    builder.MigrationsAssembly("InvestManager"));
+                options.UseMySql(Configuration.GetConnectionString("InvestManagerContext"), builder =>
+                    builder.MigrationsAssembly("InvestManager"));
 
-                options.UseSqlServer(Configuration.GetConnectionString("InvestManagerContext"));
+                //options.UseSqlServer(Configuration.GetConnectionString("InvestManagerContext"));
 
                 options.ConfigureWarnings(x => x.Ignore(RelationalEventId.AmbientTransactionWarning));
             });
 
-            services.AddScoped<OperationService>();
-            services.AddScoped<ParameterService>();
+            services.AddScoped<IOperationRepository, OperationService>();
+            services.AddScoped<IParameterRepository, ParameterService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

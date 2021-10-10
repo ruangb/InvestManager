@@ -23,5 +23,7 @@ namespace InvestManager.Manager.Repositories
         IList<Operation> GetRentabilityPerPeriod(Operation operation, List<Operation> operations, List<Parameter> parameters);
 
         IList<Operation> WalletProcess(List<Operation> operations);
+
+        Task<IList<Operation>> GetLiquidation(IList<Operation> listOperation, IList<Operation> listWallet, IList<Parameter> listParameter);
     }
 }
