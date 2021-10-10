@@ -118,7 +118,7 @@ namespace InvestManager.Services
 
             operations = operations.Where(x => x.Date <= endDate).ToList();
 
-            IList<Operation> listWallet = WalletProcess(operations, parameters);
+            IList<Operation> listWallet    = WalletProcess(operations);
             IList<Operation> listOperation = new List<Operation>();
 
             decimal rentabilityTotalValue = 0;
@@ -197,8 +197,11 @@ namespace InvestManager.Services
                         purchaseTotalPrice -= posDateSoldValue;
                     }
 
-                    purchaseTotalPrice -= ((purchaseTotalPrice) * (parameters[0].TradingFee / 100));
-                    deadlineSalesTotalPrice -= ((deadlineSalesTotalPrice) * (parameters[0].LiquidityFee / 100));
+                    if (parameters.Count > 0)
+                    {
+                        purchaseTotalPrice      -= ((purchaseTotalPrice) * (parameters[0].TradingFee / 100));
+                        deadlineSalesTotalPrice -= ((deadlineSalesTotalPrice) * (parameters[0].LiquidityFee / 100));
+                    }
 
                     operationReturn.Quantity = deadlineSalesQuantity;
 
@@ -223,7 +226,7 @@ namespace InvestManager.Services
             return listOperation;
         }
 
-        public IList<Operation> WalletProcess(List<Operation> operations, List<Parameter> parameters)
+        public IList<Operation> WalletProcess(List<Operation> operations)
         {
             IList<Operation> listOperation = new List<Operation>();
 

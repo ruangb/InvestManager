@@ -53,7 +53,7 @@ namespace InvestManager.Controllers
             var operations = await _operationService.FindAllAsync();
             var parameters = await _parameterService.FindAllAsync();
 
-            return View(_operationService.WalletProcess(operations, parameters)); 
+            return View(_operationService.WalletProcess(operations)); 
         }
 
         public async Task<IActionResult> Liquidation()
@@ -61,7 +61,7 @@ namespace InvestManager.Controllers
             var operations = await _operationService.FindAllAsync();
             var parameters = await _parameterService.FindAllAsync();
 
-            IList<Operation> listWallet = _operationService.WalletProcess(operations, parameters);
+            IList<Operation> listWallet = _operationService.WalletProcess(operations);
 
             IList<Operation> listOperation = new List<Operation>();
 
@@ -130,7 +130,10 @@ namespace InvestManager.Controllers
                 }
             }
 
-            ViewBag.RentabilityTotal = string.Format("Rentabilidade Total R$ {0:N2} / {1:P2}", rentabilityTotalValue, rentabilityTotalPercentage / registerSoldQuantity);
+            if (registerSoldQuantity > 0)
+                ViewBag.RentabilityTotal = string.Format("Rentabilidade Total R$ {0:N2} / {1:P2}", rentabilityTotalValue, rentabilityTotalPercentage / registerSoldQuantity);
+            else
+                ViewBag.RentabilityTotal = "Rentabilidade Total R$ 0,00 / 0,00 %";
 
             listOperation = listOperation.OrderBy(x => x.Asset).ToList();
 
@@ -176,7 +179,7 @@ namespace InvestManager.Controllers
 
             listOperation = listOperation.OrderBy(x => x.Asset).ToList();
 
-            operationView.Years = ToolKit.GetPastYears();
+            operationView.Years      = ToolKit.GetPastYears();
             operationView.Operations = listOperation;
 
             StaticClass.sOperation = operation;
@@ -235,7 +238,7 @@ namespace InvestManager.Controllers
             var operations = await _operationService.FindAllAsync();
             var parameters = await _parameterService.FindAllAsync();
 
-            return Json(_operationService.WalletProcess(operations, parameters));
+            return Json(_operationService.WalletProcess(operations));
         }
 
         public async Task<IActionResult> Create()
@@ -247,8 +250,7 @@ namespace InvestManager.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Operation operation)
         {
-            ModelState["ReferenceMonth"].ValidationState = Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Valid;
-            ModelState["ReferenceYear"].ValidationState = Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Valid;
+            SetExtraFieldsValidation();
 
             if (!ModelState.IsValid)
                 return View(operation);
@@ -322,6 +324,8 @@ namespace InvestManager.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Operation operation)
         {
+            SetExtraFieldsValidation();
+
             if (!ModelState.IsValid)
                 return View(operation);
 
@@ -353,5 +357,15 @@ namespace InvestManager.Controllers
 
             return View(viewModel);
         }
+
+        #region Auxiliar
+
+        private void SetExtraFieldsValidation()
+        {
+            ModelState["ReferenceMonth"].ValidationState = Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Valid;
+            ModelState["ReferenceYear"].ValidationState  = Microsoft.AspNetCore.Mvc.ModelBinding.ModelValidationState.Valid;
+        }
+
+        #endregion
     }
 }

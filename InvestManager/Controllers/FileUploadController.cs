@@ -32,7 +32,7 @@ namespace InvestManager.Controllers
             {
                 DataTable dt = new DataTable();
 
-                using (XLWorkbook workbook = new XLWorkbook(archive.OpenReadStream()))
+                using (XLWorkbook workbook = new XLWorkbook(archive.OpenReadStream(), XLEventTracking.Disabled))
                 {
                     bool isFirstRow = true;
                     var rows = workbook.Worksheet(1).RowsUsed();
