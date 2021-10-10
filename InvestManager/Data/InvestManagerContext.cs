@@ -7,6 +7,7 @@ namespace InvestManager.Models
         public InvestManagerContext (DbContextOptions<InvestManagerContext> options)
             : base(options)
         {
+            Database.EnsureCreated();
         }
 
         public DbSet<Operation> Operation { get; set; }
