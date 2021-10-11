@@ -1,5 +1,5 @@
 ﻿using InvestManager.Models;
-using InvestManager.Services;
+using InvestManager.Manager.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using ClosedXML.Excel;
@@ -13,11 +13,11 @@ namespace InvestManager.Controllers
 {
     public class FileUploadController : Controller
     {
-        private readonly OperationService _operationService;
+        private readonly IOperationRepository _operationRepository;
 
-        public FileUploadController(OperationService operationService)
+        public FileUploadController(IOperationRepository operationRepository)
         {
-            _operationService = operationService;
+            _operationRepository = operationRepository;
         }
 
         public IActionResult Index()
@@ -28,6 +28,22 @@ namespace InvestManager.Controllers
         [HttpPost("FileUpload")]
         public async Task<IActionResult> Index(List<IFormFile> archives)
         {
+            bool fileUploaded = await UploadFileAsync(archives);
+
+            if (fileUploaded)
+                ViewBag.Range = "Foi tudo salvo";
+            else
+                ViewBag.Range = "Não foi tudo salvo";
+
+            return Index();
+        }
+
+        #region Auxiliar
+
+        private async Task<bool> UploadFileAsync(List<IFormFile> archives)
+        {
+            bool fileUploaded = false;
+
             foreach (var archive in archives)
             {
                 DataTable dt = new DataTable();
@@ -68,29 +84,31 @@ namespace InvestManager.Controllers
                     {
                         Operation operation = new Operation();
 
-                        operation.Date     = Convert.ToDateTime(item.ItemArray[0].ToString().Trim());
-                        operation.Type     = item.ItemArray[2].ToString().Trim() == "C" ? Enums.GetDescription(Enums.OperationType.Purchase) : Enums.GetDescription(Enums.OperationType.Sale);
-                        operation.Asset    = item.ItemArray[5].ToString().Trim().EndsWith("F") ? item.ItemArray[5].ToString().Trim().Remove(item.ItemArray[5].ToString().Trim().Length -1) : item.ItemArray[5].ToString().Trim();
+                        operation.Date = Convert.ToDateTime(item.ItemArray[0].ToString().Trim());
+                        operation.Type = item.ItemArray[2].ToString().Trim() == "C" ? Enums.GetDescription(Enums.OperationType.Purchase) : Enums.GetDescription(Enums.OperationType.Sale);
+                        operation.Asset = item.ItemArray[5].ToString().Trim().EndsWith("F") ? item.ItemArray[5].ToString().Trim().Remove(item.ItemArray[5].ToString().Trim().Length - 1) : item.ItemArray[5].ToString().Trim();
                         operation.Quantity = Convert.ToInt32(item.ItemArray[7].ToString().Trim());
-                        operation.Price    = Convert.ToDecimal(item.ItemArray[8].ToString().Trim());
-                        operation.Status   = 0;
+                        operation.Price = Convert.ToDecimal(item.ItemArray[8].ToString().Trim());
+                        operation.Status = 0;
 
                         listOperation.Add(operation);
                     }
 
-                    bool allSaved = await _operationService.InsertAsync(listOperation);
+                    bool allSaved = await _operationRepository.InsertAsync(listOperation);
 
                     if (!allSaved)
                     {
                         ViewBag.Range = "Não foi tudo salvo";
-                        return Index();
+                        return fileUploaded;
                     }
                 }
             }
 
-            ViewBag.Range = "Foi tudo salvo";
+            fileUploaded = true;
 
-            return Index();
+            return fileUploaded;
         }
+
+        #endregion
     }
 }

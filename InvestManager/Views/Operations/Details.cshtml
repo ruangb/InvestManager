@@ -1,15 +1,20 @@
 ﻿@model InvestManager.Models.Operation
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalhes da Transação";
 }
 
-<h2>Details</h2>
+<h2>@ViewData["Title"]</h2>
 
+<hr />
 <div>
-    <h4>Operation</h4>
-    <hr />
     <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Asset)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Asset)
+        </dd>
         <dt>
             @Html.DisplayNameFor(model => model.Price)
         </dt>

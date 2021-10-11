@@ -71,11 +71,9 @@ namespace InvestManager.Controllers
             if (listOperation.Count() > 0)
                 ViewBag.RentabilityTotal = string.Format("Rentabilidade Total R$ {0:N2} / {1:P2}", listOperation.Sum(x => x.RentabilityValue), listOperation.Sum(x => x.RentabilityPercentage) / listOperation.Count());
 
-            listOperation = listOperation.OrderBy(x => x.Asset).ToList();
-
             operationView.Months     = Enums.GetDescriptions<Enums.Month>();
             operationView.Years      = ToolKit.GetPastYears();
-            operationView.Operations = listOperation;
+            operationView.Operations = listOperation.OrderBy(x => x.Asset).ToList();
 
             StaticClass.sOperation = operation;
 
@@ -95,10 +93,8 @@ namespace InvestManager.Controllers
             if (listOperation.Count() > 0)
                 ViewBag.RentabilityTotal = string.Format("Rentabilidade Total R$ {0:N2} / {1:P2}", listOperation.Sum(x => x.RentabilityValue), listOperation.Sum(x => x.RentabilityPercentage) / listOperation.Count());
 
-            listOperation = listOperation.OrderBy(x => x.Asset).ToList();
-
             operationView.Years      = ToolKit.GetPastYears();
-            operationView.Operations = listOperation;
+            operationView.Operations = listOperation.OrderBy(x => x.Asset).ToList();
 
             StaticClass.sOperation = operation;
 
@@ -175,9 +171,10 @@ namespace InvestManager.Controllers
 
             await _operationRepository.InsertAsync(operation);
 
-            TempData["$AlertMessage$"] = "registro salvo com sucesso";
+            TempData["$AlertMessage$"] = "Registro salvo com sucesso!";
 
             return RedirectToAction("Create");
+            //return View();
         }
 
         public async Task<IActionResult> Delete(int? id)

@@ -1,14 +1,16 @@
 ﻿@model InvestManager.Models.Operation
 
 @{
-    ViewData["Title"] = "Nova Operação";
+    ViewData["Title"] = "Nova Transação";
 }
 
 <h2>@ViewData["Title"]</h2>
 
-@if (TempData["$$"] != null)
+@if (TempData["$AlertMessage$"] != null)
 {
-    <div class="alerta">TempData["$AlertMessage$"]</div>
+    <div class="text-success">
+        @TempData["$AlertMessage$"]
+    </div>
 }
 
 <hr />
