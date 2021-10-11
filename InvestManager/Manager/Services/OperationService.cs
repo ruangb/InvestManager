@@ -365,7 +365,7 @@ namespace InvestManager.Services
                 }
             }
 
-            return operations;
+            return await Task.Run(() => operations);
         }
     }
 

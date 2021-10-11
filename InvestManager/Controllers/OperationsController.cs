@@ -109,7 +109,7 @@ namespace InvestManager.Controllers
             operation.Months = Enums.GetDescriptions<Enums.Month>();
             operation.Years = ToolKit.GetPastYears();
 
-            return View(operation);
+            return await Task.Run(() => View(operation));
         }
 
         public async Task<IActionResult> RentabilityPerYear()
@@ -119,7 +119,7 @@ namespace InvestManager.Controllers
             operation.Operations = new List<Operation>();
             operation.Years = ToolKit.GetPastYears();
 
-            return View(operation);
+            return await Task.Run(() => View(operation));
         }
 
         public async Task<JsonResult> BuildRentabilityPerPeriodChartAsync()
@@ -155,10 +155,7 @@ namespace InvestManager.Controllers
             return Json(_operationRepository.WalletProcess(operations));
         }
 
-        public async Task<IActionResult> Create()
-        {
-            return View();
-        }
+        public async Task<IActionResult> Create() => await Task.Run(() => View());
 
         [HttpPost]
         [ValidateAntiForgeryToken]
