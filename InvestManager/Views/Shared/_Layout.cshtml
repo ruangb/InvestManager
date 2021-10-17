@@ -20,7 +20,7 @@
 </head>
 <body>
     <nav class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
+        <div class="container" >
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                     <span class="sr-only">Toggle navigation</span>
@@ -28,25 +28,23 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a asp-area="" asp-controller="Operations" asp-action="Index" class="navbar-brand">InvestManager</a>
+                <a class="navbar-left"><img src="~/images/logo1.png" style="width:40px;height:40px; margin-top: 10px" /></a> 
+                <a asp-area="" asp-controller="Operations" asp-action="Index" class="navbar-brand" style="color:white">&nbsp;&nbsp;Invest Manager</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Operations" asp-action="Index">Operações</a></li>
-                    <li><a asp-area="" asp-controller="Operations" asp-action="Wallet">Carteira</a></li>
-                    <li><a asp-area="" asp-controller="Operations" asp-action="Liquidation">Liquidação</a></li>
+                    <li><a asp-area="" asp-controller="Operations" asp-action="Index" style="color:white">Transações</a></li>
+                    <li><a asp-area="" asp-controller="Operations" asp-action="Wallet" style="color:white">Carteira</a></li>
+                    <li><a asp-area="" asp-controller="Operations" asp-action="Liquidation" style="color:white">Liquidação</a></li>
                     <li class="dropdown">
-                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                            Relatórios
-                            <span class="caret"></span>
-                        </a>
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#" style="color:white">Relatórios<span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a asp-area="" asp-controller="Operations" asp-action="RentabilityPerMonth">Rentabilidade por Mês</a></li>
-                            <li><a asp-area="" asp-controller="Operations" asp-action="RentabilityPerYear">Rentabilidade por Ano</a></li>
+                            <li><a asp-area="" asp-controller="Operations" asp-action="RentabilityPerMonth" style="color:black">Rentabilidade por Mês</a></li>
+                            <li><a asp-area="" asp-controller="Operations" asp-action="RentabilityPerYear" style="color:black">Rentabilidade por Ano</a></li>
                         </ul>
                     </li>
-                    <li><a asp-area="" asp-controller="Parameters" asp-action="Index">Parâmetros</a></li>
-                    <li><a asp-area="" asp-controller="FileUpload" asp-action="Index">Uploads</a></li>
+                    <li><a asp-area="" asp-controller="Parameters" asp-action="Index" style="color:white">Parâmetros</a></li>
+                    <li><a asp-area="" asp-controller="FileUpload" asp-action="Index" style="color:white">Uploads</a></li>
                 </ul>
             </div>
         </div>
@@ -75,7 +73,7 @@
         <script>
             $(document).ready(function () {
                 $('#dataTable').DataTable({
-                    "ordering" : false,
+                    "ordering": false,
                     "language": {
                         "lengthMenu": "Mostrando _MENU_ registros por página",
                         "zeroRecords": "Nenhum registro encontrado",
