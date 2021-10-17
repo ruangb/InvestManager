@@ -28,12 +28,14 @@ namespace InvestManager.Controllers
         [HttpPost("FileUpload")]
         public async Task<IActionResult> Index(List<IFormFile> archives)
         {
-            bool fileUploaded = await UploadFileAsync(archives);
+            ViewBag.Range = "Funcionalidade em manutenção";
 
-            if (fileUploaded)
-                ViewBag.Range = "Foi tudo salvo";
-            else
-                ViewBag.Range = "Não foi tudo salvo";
+            //bool fileUploaded = await UploadFileAsync(archives);
+
+            //if (fileUploaded)
+            //    ViewBag.Range = "Foi tudo salvo";
+            //else
+            //    ViewBag.Range = "Não foi tudo salvo";
 
             return Index();
         }

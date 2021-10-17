@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "mssql1": {
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/rgbcloud/databases/DB_InvestManager",
+      "type": "mssql.azure",
+      "connectionId": "InvestManagerContext",
+      "secretStore": "AzureAppSettings"
+    }
+  }
+}
