@@ -97,17 +97,12 @@ namespace InvestManager.Models
 
         public Operation(int id, string asset, decimal price, int quantity, DateTime date, string type)
         {
-            Id = id;
-            Asset = asset;
-            Price = price;
+            Id       = id;
+            Asset    = asset;
+            Price    = price;
             Quantity = quantity;
-            Date = date;
-            Type = type;
-        }
-
-        public override string ToString()
-        {
-            return "Transação";
+            Date     = date;
+            Type     = type;
         }
 
         public static string GetModelName()

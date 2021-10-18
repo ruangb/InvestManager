@@ -25,9 +25,14 @@ namespace InvestManager.Models
 
         public Parameter(int id, decimal tradingFee, decimal liquidityFee)
         {
-            Id = id;
-            TradingFee = tradingFee;
+            Id           = id;
+            TradingFee   = tradingFee;
             LiquidityFee = liquidityFee;
+        }
+
+        public static string GetModelName()
+        {
+            return "Parâmetro";
         }
     }
 }

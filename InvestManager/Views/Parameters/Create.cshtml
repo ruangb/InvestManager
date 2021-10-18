@@ -1,35 +1,37 @@
 ﻿@model InvestManager.Models.Parameter
 
 @{
-    ViewData["Title"] = "Cadastrar Parâmetros";
+    ViewData["Title"] = $"Cadastrar {Parameter.GetModelName()}";
 }
 
-<h2>@ViewData["Title"]</h2>
+<br />
+
+<h3>@ViewData["Title"]</h3>
 
 <hr />
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
+    <div class="col-md-4 col-md-offset-4">
+        <form asp-action="Create" class="form-group-sm">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="TradingFee" class="control-label"></label>
-                <input asp-for="TradingFee" class="form-control" />
+                <input asp-for="TradingFee" class="form-control w30" />
                 <span asp-validation-for="TradingFee" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="LiquidityFee" class="control-label"></label>
-                <input asp-for="LiquidityFee" class="form-control" />
+                <input asp-for="LiquidityFee" class="form-control w30" />
                 <span asp-validation-for="LiquidityFee" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-default" />
+                <input type="submit" value="Salvar" class="btn btn-default" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Voltar para a lista</a>
 </div>
 
 @section Scripts {
