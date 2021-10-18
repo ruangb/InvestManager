@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -42,6 +41,8 @@ namespace InvestManager.Models
         [Required(ErrorMessage = "{0} obrigatório")]
         [Column(TypeName ="decimal(1)")]
         public decimal Status { get; set; }
+
+        #region NotMapped
 
         [NotMapped]
         [DisplayFormat(DataFormatString = "{0:N2}")]
@@ -88,6 +89,8 @@ namespace InvestManager.Models
         [NotMapped]
         public IList<Operation> Operations { get; set; }
 
+        #endregion
+
         public Operation()
         {
         }
@@ -100,6 +103,16 @@ namespace InvestManager.Models
             Quantity = quantity;
             Date = date;
             Type = type;
+        }
+
+        public override string ToString()
+        {
+            return "Transação";
+        }
+
+        public static string GetModelName()
+        {
+            return "Transação";
         }
     }
 }
