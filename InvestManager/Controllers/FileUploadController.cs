@@ -28,14 +28,7 @@ namespace InvestManager.Controllers
         [HttpPost("FileUpload")]
         public async Task<IActionResult> Index(List<IFormFile> archives)
         {
-            ViewBag.Range = "Funcionalidade em manutenção";
-
-            //bool fileUploaded = await UploadFileAsync(archives);
-
-            //if (fileUploaded)
-            //    ViewBag.Range = "Foi tudo salvo";
-            //else
-            //    ViewBag.Range = "Não foi tudo salvo";
+            await UploadFileAsync(archives);
 
             return Index();
         }
@@ -45,6 +38,7 @@ namespace InvestManager.Controllers
         private async Task<bool> UploadFileAsync(List<IFormFile> archives)
         {
             bool fileUploaded = false;
+            int rowsQuantity = 0;
 
             foreach (var archive in archives)
             {
@@ -86,12 +80,12 @@ namespace InvestManager.Controllers
                     {
                         Operation operation = new Operation();
 
-                        operation.Date = Convert.ToDateTime(item.ItemArray[0].ToString().Trim());
-                        operation.Type = item.ItemArray[2].ToString().Trim() == "C" ? Enums.GetDescription(Enums.OperationType.Purchase) : Enums.GetDescription(Enums.OperationType.Sale);
-                        operation.Asset = item.ItemArray[5].ToString().Trim().EndsWith("F") ? item.ItemArray[5].ToString().Trim().Remove(item.ItemArray[5].ToString().Trim().Length - 1) : item.ItemArray[5].ToString().Trim();
+                        operation.Date     = Convert.ToDateTime(item.ItemArray[0].ToString().Trim());
+                        operation.Type     = item.ItemArray[2].ToString().Trim() == "C" ? Enums.GetDescription(Enums.OperationType.Purchase) : Enums.GetDescription(Enums.OperationType.Sale);
+                        operation.Asset    = item.ItemArray[5].ToString().Trim().EndsWith("F") ? item.ItemArray[5].ToString().Trim().Remove(item.ItemArray[5].ToString().Trim().Length - 1) : item.ItemArray[5].ToString().Trim();
                         operation.Quantity = Convert.ToInt32(item.ItemArray[7].ToString().Trim());
-                        operation.Price = Convert.ToDecimal(item.ItemArray[8].ToString().Trim());
-                        operation.Status = 0;
+                        operation.Price    = Convert.ToDecimal(item.ItemArray[8].ToString().Trim());
+                        operation.Status   = 0;
 
                         listOperation.Add(operation);
                     }
@@ -100,13 +94,17 @@ namespace InvestManager.Controllers
 
                     if (!allSaved)
                     {
-                        ViewBag.Range = "Não foi tudo salvo";
+                        ViewBag.Message = "Houve um problema com a operação";
                         return fileUploaded;
                     }
+
+                    rowsQuantity = workbook.Worksheet(1).RowsUsed().Count();
                 }
             }
 
             fileUploaded = true;
+
+            ViewBag.Message = $"{rowsQuantity} registros importados com sucesso";
 
             return fileUploaded;
         }

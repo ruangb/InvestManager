@@ -17,6 +17,15 @@
     </div>
 </form>
 
+@{ var messageClass = "text-success"; }
 
-@ViewBag.Range
+@if (@ViewBag.Message != "Operação efetuada com sucesso")
+{
+    messageClass = "text-danger";
+}
+
+<div class=@messageClass>
+    @ViewBag.Message
+</div>
+
 
