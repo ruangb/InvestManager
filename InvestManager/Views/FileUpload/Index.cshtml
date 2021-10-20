@@ -1,31 +1,42 @@
 ﻿@{
-    ViewData["Title"] = "Realizar Upload";
+    ViewData["Title"] = "Importar arquivo Excel";
 }
 
-<h2>@ViewData["Title"]</h2>
+<br />
 
-<form method="post" enctype="multipart/form-data" asp-controller="FileUpload" asp-action="Index">
-    <div class="form-group row">
-        <div class="col-md-2">
-            <input type="file" name="archives" />
+<h3>@ViewData["Title"]</h3>
+
+<hr />
+
+<div class="row">
+    <div class="col-md-4 col-md-offset-4">
+        <p class="small">Carregue arquivos com a extensão .xlsx</p>
+        <br />
+        <form method="post" enctype="multipart/form-data" asp-controller="FileUpload" asp-action="Index" class="form-group-sm">
+            <div class="form-group row">
+                <div class="col-md-2">
+                    <input type="file" name="archives" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-2">
+                    <input type="submit" class="btn btn-default btn-sm" value="Enviar arquivo" />
+                </div>
+            </div>
+        </form>
+
+        @{ var messageClass = "text-success"; }
+
+        @if (@ViewBag.Success)
+        {
+            messageClass = "text-danger";
+        }
+
+        <div class=@messageClass>
+            @ViewBag.Message
         </div>
     </div>
-    <div class="form-group row">
-        <div class="col-md-2">
-            <input type="submit" class="btn btn-default btn-sm disabled" value="Enviar Arquivo" />
-        </div>
-    </div>
-</form>
-
-@{ var messageClass = "text-success"; }
-
-@if (@ViewBag.Message != "Operação efetuada com sucesso")
-{
-    messageClass = "text-danger";
-}
-
-<div class=@messageClass>
-    @ViewBag.Message
 </div>
+
 
 

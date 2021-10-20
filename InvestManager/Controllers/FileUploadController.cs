@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.IO;
 
 namespace InvestManager.Controllers
 {
@@ -28,7 +29,22 @@ namespace InvestManager.Controllers
         [HttpPost("FileUpload")]
         public async Task<IActionResult> Index(List<IFormFile> archives)
         {
-            await UploadFileAsync(archives);
+            ViewBag.Success = false;
+
+            if (archives.Count == 0)
+            {
+                ViewBag.Message = "Nenhum arquivo selecionado";
+                return Index();
+            }
+
+            bool hasRightExtension = true;
+
+            archives.ForEach(x => hasRightExtension = Path.GetExtension(x.FileName) == ".xlsx");
+
+            if (hasRightExtension)
+                await UploadFileAsync(archives);
+            else
+                ViewBag.Message = "Extensão não permitida";
 
             return Index();
         }
@@ -98,13 +114,14 @@ namespace InvestManager.Controllers
                         return fileUploaded;
                     }
 
-                    rowsQuantity = workbook.Worksheet(1).RowsUsed().Count();
+                    rowsQuantity = workbook.Worksheet(1).RowsUsed().Count() -1;
                 }
             }
 
             fileUploaded = true;
 
             ViewBag.Message = $"{rowsQuantity} registros importados com sucesso";
+            ViewBag.Success = true;
 
             return fileUploaded;
         }
