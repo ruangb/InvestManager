@@ -25,11 +25,11 @@
             </div>
         </form>
 
-        @{ var messageClass = "text-success"; }
+        @{ var messageClass = "text-danger"; }
 
-        @if (@ViewBag.Success)
+        @if (!string.IsNullOrEmpty(@ViewBag.Message) && @ViewBag.Message.Contains("sucesso"))
         {
-            messageClass = "text-danger";
+            messageClass = "text-success";
         }
 
         <div class=@messageClass>

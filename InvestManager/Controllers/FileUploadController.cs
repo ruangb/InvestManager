@@ -29,8 +29,6 @@ namespace InvestManager.Controllers
         [HttpPost("FileUpload")]
         public async Task<IActionResult> Index(List<IFormFile> archives)
         {
-            ViewBag.Success = false;
-
             if (archives.Count == 0)
             {
                 ViewBag.Message = "Nenhum arquivo selecionado";
@@ -120,8 +118,7 @@ namespace InvestManager.Controllers
 
             fileUploaded = true;
 
-            ViewBag.Message = $"{rowsQuantity} registros importados com sucesso";
-            ViewBag.Success = true;
+            ViewBag.Message = $"{rowsQuantity} registros importados com sucesso!";
 
             return fileUploaded;
         }
