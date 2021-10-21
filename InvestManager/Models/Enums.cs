@@ -19,6 +19,14 @@ namespace InvestManager.Models
             Sale = 2
         }
 
+        public enum ModelNameLanguage
+        {
+            [Description("Português")]
+            Portuguese = 1,
+            [Description("Inglês")]
+            English = 2
+        }
+
         public enum Month
         {
             [Description("Nenhum")]

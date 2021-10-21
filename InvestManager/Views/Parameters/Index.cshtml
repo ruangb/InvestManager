@@ -51,3 +51,15 @@
         }
     </tbody>
 </table>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script type="text/javascript">
+        function trocaCor() {
+            document.getElementById("navOperation").style.color = "#93c54b";
+        }
+
+        window.onload = trocaCor;
+    </script>
+}

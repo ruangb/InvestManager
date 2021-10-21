@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using static InvestManager.Models.Enums;
 
 namespace InvestManager.Models
 {
@@ -105,9 +106,14 @@ namespace InvestManager.Models
             Type     = type;
         }
 
-        public static string GetModelName()
+        public override string ToString()
         {
-            return "Transação";
+            return base.ToString();
+        }
+
+        public static string GetModelName(ModelNameLanguage language)
+        {
+            return language == ModelNameLanguage.Portuguese ? "Transação" : "Operation";
         }
     }
 }

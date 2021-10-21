@@ -64,7 +64,10 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script type="text/javascript">
-
+        function trocaCor() {
+            document.getElementById("nav" + "@Operation.GetModelName(Enums.ModelNameLanguage.English)").style.color = "#93c54b";
+        }
+        window.onload = trocaCor;
     </script>
 }
 

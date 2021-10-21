@@ -33,14 +33,14 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Operations" asp-action="Index" style="color:white">Transações</a></li>
-                    <li><a asp-area="" asp-controller="Operations" asp-action="Wallet" style="color:white">Carteira</a></li>
-                    <li><a asp-area="" asp-controller="Operations" asp-action="Liquidation" style="color:white">Liquidação</a></li>
-                    <li class="dropdown">
-                        <a class="dropdown-toggle" data-toggle="dropdown" href="#" style="color:white">Relatórios<span class="caret"></span></a>
+                    <li><a id="navOperation" asp-area="" asp-controller="Operations" asp-action="Index" style="color:white">Transações</a></li>
+                    <li><a id="navWallet" asp-area="" asp-controller="Operations" asp-action="Wallet" style="color:white">Carteira</a></li>
+                    <li><a id="navLiquidation" asp-area="" asp-controller="Operations" asp-action="Liquidation" style="color:white">Liquidação</a></li>
+                    <li id="navReportDropdown" class="dropdown">
+                        <a id="navReports" class="dropdown-toggle" data-toggle="dropdown" href="#" style="color:white">Relatórios<span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a asp-area="" asp-controller="Operations" asp-action="RentabilityPerMonth" style="color:black">Rentabilidade por Mês</a></li>
-                            <li><a asp-area="" asp-controller="Operations" asp-action="RentabilityPerYear" style="color:black">Rentabilidade por Ano</a></li>
+                            <li id="navRentabilityPerMonth"><a asp-area="" asp-controller="Operations" asp-action="RentabilityPerMonth" style="color:black">Rentabilidade por Mês</a></li>
+                            <li id="navRentabilityPerYear"><a asp-area="" asp-controller="Operations" asp-action="RentabilityPerYear" style="color:black">Rentabilidade por Ano</a></li>
                         </ul>
                     </li>
                     <li><a asp-area="" asp-controller="Parameters" asp-action="Index" style="color:white">Parâmetros</a></li>
