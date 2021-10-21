@@ -36,9 +36,18 @@
     </div>
 </form>
 
+@if (Model.Operations.Count == 0)
+{
+    <br />
+}
+
 <hr />
-<div id="chart_div" style="width: auto; height: auto;"></div>
-<hr />
+
+@if (Model.Operations.Count > 0)
+{
+    <div id="chart_div" style="width: auto; height: auto;"></div>
+    <hr />
+}
 
 <table class="table table-striped table-hover" id="dataTable">
     <thead>
