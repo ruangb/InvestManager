@@ -5,9 +5,12 @@
 }
 
 <br />
-<br />
 
-<a asp-action="Create" class="btn btn-default btn-sm">Cadastrar Parâmetros</a>
+@if (!Model.Any())
+{
+    <br />
+    <a asp-action="Create" class="btn btn-default btn-sm">Cadastrar Parâmetros</a>
+}
 
 <hr />
 
