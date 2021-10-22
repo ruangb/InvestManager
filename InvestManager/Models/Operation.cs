@@ -7,6 +7,7 @@ using static InvestManager.Models.Enums;
 
 namespace InvestManager.Models
 {
+    [DisplayName("Operation")]
     public class Operation
     {
         public int Id { get; set; }
