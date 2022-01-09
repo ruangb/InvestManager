@@ -4,9 +4,14 @@
 }
 <br />
 
-<hr />
-<div id="chart_div" style="width: auto; height: auto;"></div>
-<hr />
+@{
+    if (Model.Count() > 0)
+    {
+        <hr />
+        <div id="chart_div" style="width: auto; height: auto;"></div>
+        <hr />
+    }
+}
 
 <table class="table table-striped table-hover" id="dataTable">
     <thead>
@@ -42,7 +47,7 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
-<script type="text/javascript">
+    <script type="text/javascript">
     google.charts.load('current', {packages: ['corechart', 'bar']});
     google.charts.setOnLoadCallback(LoadChart);
     function LoadChart() {
@@ -85,6 +90,6 @@
         chart.draw(data, options);
         return false;
     }
-</script>
+    </script>
 }
 

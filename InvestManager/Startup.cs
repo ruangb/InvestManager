@@ -37,10 +37,12 @@ namespace InvestManager
 
             services.AddDbContext<InvestManagerContext>(options =>
             {
-                options.UseMySql(Configuration.GetConnectionString("InvestManagerContext"), builder =>
-                    builder.MigrationsAssembly("InvestManager"));
+                //options.UseMySql(Configuration.GetConnectionString("InvestManagerContext"), builder =>
+                //    builder.MigrationsAssembly("InvestManager"));
 
-                //options.UseSqlServer(Configuration.GetConnectionString("InvestManagerContext"));
+                //options.UseInMemoryDatabase("baseTest", null);
+
+                options.UseSqlServer(Configuration.GetConnectionString("InvestManagerContext"));
 
                 options.ConfigureWarnings(x => x.Ignore(RelationalEventId.AmbientTransactionWarning));
             });
