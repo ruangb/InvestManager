@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.30717.126
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InvestManager", "InvestManager\InvestManager.csproj", "{832D64A0-EFC7-4792-9853-B30013A4D447}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InvestManagerAPI", "InvestManagerAPI\InvestManagerAPI.csproj", "{D02DF80C-E5ED-4CFC-A4A2-0FC9CD4155A6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InvestManagerAPI", "InvestManagerAPI\InvestManagerAPI.csproj", "{D02DF80C-E5ED-4CFC-A4A2-0FC9CD4155A6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

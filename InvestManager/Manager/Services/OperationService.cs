@@ -1,12 +1,16 @@
 ﻿using InvestManager.Manager.Repositories;
 using InvestManager.Models;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Net.Http;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
+using Parameter = InvestManager.Models.Parameter;
 
 namespace InvestManager.Services
 {
@@ -103,7 +107,7 @@ namespace InvestManager.Services
             _context.Add(obj);
         }
 
-        public IList<Operation> GetRentabilityPerPeriod(Operation operation, List<Operation> operations, List<Parameter> parameters)
+        public async Task<IList<Operation>> GetRentabilityPerPeriodAsync(Operation operation, List<Operation> operations, List<Parameter> parameters)
         {
             Operation operationReturn = new Operation();
 
@@ -128,7 +132,7 @@ namespace InvestManager.Services
 
             operations = operations.Where(x => x.Date <= endDate).ToList();
 
-            IList<Operation> listWallet    = WalletProcess(operations);
+            IList<Operation> listWallet    = await WalletProcessAsync(operations);
             IList<Operation> listOperation = new List<Operation>();
 
             decimal rentabilityTotalValue = 0;
@@ -236,8 +240,35 @@ namespace InvestManager.Services
             return listOperation;
         }
 
-        public IList<Operation> WalletProcess(List<Operation> operations)
+        enum AppState
         {
+            Um, 
+            Dois, 
+            Tres
+        }
+
+        public async Task<IList<Operation>> WalletProcessAsync(List<Operation> operations)
+        {
+            //var teste = AppState.Dois.;
+
+            //var clientRest = new RestClient();
+            //RestRequest request = new RestRequest("api/wallet-process", Method.Get);
+            //request.RequestFormat = DataFormat.Json;
+            //request.AddBody(operations);
+            //var response = clientRest.Execute(request);
+
+            //List<Operation> reservationList = new List<Operation>();
+
+            //using (var httpClient = new HttpClient())
+            //{
+            //    using (var response = await httpClient.GetAsync("https://localhost:44374/api/operations/wallet-process"))
+            //    {
+            //        string apiResponse = await response.Content.ReadAsStringAsync();
+            //        reservationList = JsonConvert.DeserializeObject<List<Operation>>(apiResponse);
+            //    }
+            //}
+
+            #region code
             IList<Operation> listOperation = new List<Operation>();
 
             var listGroup = operations.GroupBy(x => x.Asset);
@@ -293,7 +324,9 @@ namespace InvestManager.Services
                 }
             }
 
-            return listOperation.OrderByDescending(x => x.InvestValue).ThenBy(x => x.Asset).ToList();
+            #endregion
+
+            return await Task.Run(() => listOperation.OrderByDescending(x => x.InvestValue).ThenBy(x => x.Asset).ToList());
         }
 
         public async Task<IList<Operation>> GetLiquidation(IList<Operation> listOperation, IList<Operation> listWallet, IList<Parameter> listParameter)

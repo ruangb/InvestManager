@@ -44,16 +44,16 @@ namespace InvestManager.Controllers
         {
             var listOperation = await _operationRepository.FindAllAsync();
 
-            return View(_operationRepository.WalletProcess(listOperation)); 
+            return await Task.Run(() => View(_operationRepository.WalletProcessAsync(listOperation).Result));
         }
 
         public async Task<IActionResult> Liquidation()
         {
             var operations = await _operationRepository.FindAllAsync();
             var parameters = await _parameterRepository.FindAllAsync();
-            var listWallet = _operationRepository.WalletProcess(operations);
+            var listWallet = _operationRepository.WalletProcessAsync(operations);
 
-            var listLiquidation = await GetLiquidation(operations, listWallet, parameters);
+            var listLiquidation = await GetLiquidation(operations, (IList<Operation>)listWallet, parameters);
 
             return View(listLiquidation);
         }
@@ -66,7 +66,7 @@ namespace InvestManager.Controllers
 
             Operation operationView = new Operation();
 
-            IList<Operation> listOperation = _operationRepository.GetRentabilityPerPeriod(operation, operations, parameters);
+            IList<Operation> listOperation = (IList<Operation>)_operationRepository.GetRentabilityPerPeriodAsync(operation, operations, parameters);
 
             if (listOperation.Count() > 0)
                 ViewBag.RentabilityTotal = string.Format("Rentabilidade Total R$ {0:N2} / {1:P2}", listOperation.Sum(x => x.RentabilityValue), listOperation.Sum(x => x.RentabilityPercentage) / listOperation.Count());
@@ -88,7 +88,7 @@ namespace InvestManager.Controllers
 
             Operation operationView = new Operation();
 
-            IList<Operation> listOperation = _operationRepository.GetRentabilityPerPeriod(operation, operations, parameters);
+            IList<Operation> listOperation = await _operationRepository.GetRentabilityPerPeriodAsync(operation, operations, parameters);
 
             if (listOperation.Count() > 0)
                 ViewBag.RentabilityTotal = string.Format("Rentabilidade Total R$ {0:N2} / {1:P2}", listOperation.Sum(x => x.RentabilityValue), listOperation.Sum(x => x.RentabilityPercentage) / listOperation.Count());
@@ -133,7 +133,7 @@ namespace InvestManager.Controllers
 
             if (operation != null)
             {
-                listOperation = (List<Operation>)_operationRepository.GetRentabilityPerPeriod(StaticClass.sOperation, operations, parameters);
+                listOperation = (List<Operation>)await _operationRepository.GetRentabilityPerPeriodAsync(StaticClass.sOperation, operations, parameters);
 
                 foreach (var item in listOperation)
                 {
@@ -152,7 +152,7 @@ namespace InvestManager.Controllers
             var operations = await _operationRepository.FindAllAsync();
             var parameters = await _parameterRepository.FindAllAsync();
 
-            return Json(_operationRepository.WalletProcess(operations));
+            return Json(_operationRepository.WalletProcessAsync(operations));
         }
 
         public async Task<IActionResult> Create() => await Task.Run(() => View());

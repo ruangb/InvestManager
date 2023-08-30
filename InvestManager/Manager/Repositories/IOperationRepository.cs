@@ -20,9 +20,9 @@ namespace InvestManager.Manager.Repositories
 
         void Keep(Operation obj);
 
-        IList<Operation> GetRentabilityPerPeriod(Operation operation, List<Operation> operations, List<Parameter> parameters);
-
-        IList<Operation> WalletProcess(List<Operation> operations);
+        Task<IList<Operation>> GetRentabilityPerPeriodAsync(Operation operation, List<Operation> operations, List<Parameter> parameters);
+        
+        Task<IList<Operation>> WalletProcessAsync(List<Operation> operations);
 
         Task<IList<Operation>> GetLiquidation(IList<Operation> listOperation, IList<Operation> listWallet, IList<Parameter> listParameter);
     }
